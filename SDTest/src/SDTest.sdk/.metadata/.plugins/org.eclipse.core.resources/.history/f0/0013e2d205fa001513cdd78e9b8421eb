@@ -1,0 +1,13 @@
+/*
+ * sgf_writer.h
+ *
+ *  Created on: Apr 3, 2016
+ *      Author: Jesse
+ */
+
+#ifndef SGF_WRITER_H_
+#define SGF_WRITER_H_
+
+
+
+#endif /* SGF_WRITER_H_ */

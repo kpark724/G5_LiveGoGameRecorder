@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;FileSystemDev/src/sd_filesystem&apos; to &apos;sd_filesystem.h&apos;" description="Rename resource &apos;sd_filesystem&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="src/sd_filesystem" name="sd_filesystem.h" stamp="1456790869732" updateReferences="true"/>
+</session>

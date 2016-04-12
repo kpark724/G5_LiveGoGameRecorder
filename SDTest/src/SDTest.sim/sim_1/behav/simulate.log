@@ -1,0 +1,9 @@
+Vivado Simulator 2015.4
+Time resolution is 1 ps
+Note: WARNING: Behavioral models for independent clock FIFO configurations do not model synchronization delays. The behavioral models are functionally correct, and will represent the behavior of the configured FIFO. See the FIFO Generator User Guide for more information.
+Time: 0 ps  Iteration: 0  Process: /sd_tb/DUT/design_1_i/axi_quad_spi_0/U0/qspi_legacy_md_gen/QSPI_CORE_INTERFACE_I/fifo_exists/TX_FIFO_II/use_2n_depth/v6_s6_and_later/I_ASYNC_FIFO_BRAM/gntve_beh_sim/gnbi_beh_sim/inst_fifo_gen_ntve/gconvfifo/inst_conv_fifo/line__5552  File: C:/Users/Jesse/XilinxProjects/SDTest/SDTest.ip_user_files/ipstatic/fifo_generator_v13_0/simulation/fifo_generator_vhdl_beh.vhd
+Note: WARNING: Behavioral models for independent clock FIFO configurations do not model synchronization delays. The behavioral models are functionally correct, and will represent the behavior of the configured FIFO. See the FIFO Generator User Guide for more information.
+Time: 0 ps  Iteration: 0  Process: /sd_tb/DUT/design_1_i/axi_quad_spi_0/U0/qspi_legacy_md_gen/QSPI_CORE_INTERFACE_I/fifo_exists/RX_FIFO_II/use_2n_depth/v6_s6_and_later/I_ASYNC_FIFO_BRAM/gntve_beh_sim/gnbi_beh_sim/inst_fifo_gen_ntve/gconvfifo/inst_conv_fifo/line__5552  File: C:/Users/Jesse/XilinxProjects/SDTest/SDTest.ip_user_files/ipstatic/fifo_generator_v13_0/simulation/fifo_generator_vhdl_beh.vhd
+Warning: [Unisim MMCME2_ADV-20] Input CLKIN1 period and attribute CLKIN1_PERIOD are not same. Instance sd_tb.DUT.design_1_i.clk_wiz_1.inst.mmcm_adv_inst 
+Note: Block Memory Generator module is using a behavioral model FOR simulation which will not precisely model memory collision behavior.
+Time: 2610 ns  Iteration: 6  Process: /sd_tb/DUT/design_1_i/microblaze_0_local_memory/lmb_bram/U0/native_mem_map_module/mem_map_module/line__3418  File: C:/Users/Jesse/XilinxProjects/SDTest/SDTest.ip_user_files/ipstatic/blk_mem_gen_v8_3/simulation/blk_mem_gen_v8_3.vhd

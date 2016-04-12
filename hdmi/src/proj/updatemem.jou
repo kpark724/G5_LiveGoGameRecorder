@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# updatemem v2015.3 (64-bit)
+# SW Build 1368829 on Mon Sep 28 20:06:43 MDT 2015
+# 
+# Start of session at: Sun Mar 27 20:21:14 2016
+# Process ID: 4940
+# Current directory: c:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj
+# Command line: updatemem.exe -mode batch -source C:/Xilinx/SDK/2015.3/scripts/updatemem/main.tcl -notrace -tclargs -meminfo C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/hdmi_wrapper_hw_platform_0/hdmi_wrapper.mmi -data C:/Xilinx/SDK/2015.3/data/embeddedsw/lib/microblaze/mb_bootloop_le.elf -proc hdmi_i/microblaze_0 -bit C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/hdmi_wrapper_hw_platform_0/hdmi_wrapper.bit -out C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/hdmi_wrapper_hw_platform_0/download.bit -force
+# Log file: c:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/updatemem.log
+# Journal file: c:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj\updatemem.jou
+#-----------------------------------------------------------
+source C:/Xilinx/SDK/2015.3/scripts/updatemem/main.tcl -notrace

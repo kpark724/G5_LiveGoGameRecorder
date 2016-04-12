@@ -1,0 +1,52 @@
+#include "stdio.h"
+#include "stdlib.h"
+#include "string.h"
+#include "sgf_writer.h"
+#include "fat_filesystem.h"
+
+/*
+*   Everytime vdma_1 reads from the StoneDetect IP, the IP changes one of its register value to the next stone.
+*   It is assumed that IP is outputting the result by traversing through column first and then row (row: outer loop, col: inner loop)
+*   Therefore, the memory will be stored with 361 2-bit information, which must be translated into sgf file format.
+*   361 * 2 bits / 8 bits per byte = 90.25 bytes ~= 91 bytes
+*   91 bytes ~= 23 DWORD
+*
+*/
+
+void init_sgf_file(FILE *fp){
+
+    char tmp[15] ="(;GM[1]SZ[19]\n";
+    fwrite(tmp, sizeof(char), strlen(tmp)/sizeof(char), fp);
+
+}
+void write_sgf_move(FILE *fp, char x, char y, char stoneColor){
+
+    char tmp[8];
+
+    // Sanity check
+    if (x < 0 || y < 0 || x >= BOARD_SIZE || y >= BOARD_SIZE){
+        printf("The move is not valid\n");
+        return;
+    }
+
+    tmp[0] = ';';
+    if ((int) stoneColor == BLACK_TURN){
+        tmp[1] = 'B';
+    } else if ((int) stoneColor == WHITE_TURN){
+        tmp[1] = 'W';
+    }
+    tmp[2] = '[';
+    tmp[3] = x + 'a';
+    tmp[4] = y + 'a';
+    tmp[5] = ']';
+    tmp[6] = '\n';
+    tmp[7] = '\0';
+
+    fwrite(tmp, sizeof(char), strlen(tmp)/sizeof(char), fp);
+}
+
+void end_sgf_file(FILE *fp){
+    char tmp[3] =")\n";
+    fwrite(tmp, sizeof(char), strlen(tmp)/sizeof(char), fp);
+}
+

@@ -1,0 +1,112 @@
+/*
+ * fat_filesystem.h
+ *
+ *  Created on: Mar 11, 2016
+ *      Author: Jesse
+ */
+
+#ifndef FAT_FILESYSTEM_H_
+#define FAT_FILESYSTEM_H_
+
+#include "sd_filesystem.h"
+#include "xil_types.h"
+
+//file status macros
+#define FILE_STATUS_VALID 0x1
+#define FILE_STATUS_DIRTY 0x2
+
+//root dir entry attribute flags
+#define FILE_READ_ONLY	0x1
+#define FILE_HIDDEN		0x2
+#define FILE_SYSTEM		0x4
+#define FILE_VOL_LABEL	0x8
+#define FILE_SUBDIR		0x10
+#define FILE_ARCHIVE	0x20
+
+//position calculation macros
+#define FAT_SECTOR(cluster) (cluster * 2) / SD_INIT_SEC_SIZE
+#define FAT_OFFSET(cluster) (cluster * 2) % SD_INIT_SEC_SIZE
+
+#define SEEK_SECTOR(byte) byte / SD_INIT_SEC_SIZE
+#define SEEK_OFFSET(byte) byte % SD_INIT_SEC_SIZE
+
+//cluster-sector calculation macros
+#define CLUSTER_SEC(fd) (fd->clusters[fd->current_cluster]
+							* FS_filesystem.bootsector.sectors_per_cluster
+							+ FS_filesystem.data_start_sector) + fd->current_sector
+
+typedef struct FAT_BOOTSEC_T {
+	//u8 bootstrap_jmp[3];
+	//u8 manufacter[8];
+	u16 bytes_per_sector;
+	u8 sectors_per_cluster;
+	//u16 reserved_sectors;
+	u8 FAT_count;
+	u16 root_dir_entries;
+	//u16 sector_total0; //for < 65535 sectors
+	//u8 media_descriptor;
+	u16 sectors_per_FAT;
+	//u16 sectors_per_track;
+	//u16 head_count;
+	//u32 hidden_sectors;
+	//u32 sector_total1; //for > 65535 sectors
+	//u16 drive_number;
+	//u8 boot_record_signature;
+	//u32 volume_serial_number;
+	//u8 volume_label[11];
+	//u64 filesystem_identifier;
+	//u8 bootstrap_program[448];
+	//u16 boot_end_signature;
+} FAT_BOOTSEC_T;
+
+typedef struct ROOT_DIR_ENTRY_T {
+	u8 filename[8];
+	u8 ext[3];
+	u8 attributes;
+	u8 NT;
+	u8 time_created_millis;
+	u16 time_created_hm;
+	u16 date_created;
+	u16 last_accessed_date;
+	u16 ext_attributes;
+	u16 time_modified;
+	u16 date_modified;
+	u16 start_cluster;
+	u32 file_size; //in bytes
+} ROOT_DIR_ENTRY_T;
+
+typedef struct FILESYSTEM_T {
+	FAT_BOOTSEC_T bootsector;
+	u32 fat_sector;
+	u32 root_dir_sector;
+	u32 root_dir_num_sectors;
+	u32 data_start_sector;
+} FILESYSTEM_T;
+
+typedef struct FILE {
+	u8 filename[8];
+	u8 ext[3];
+	u8 status;
+	u32 file_size;
+	u16 * clusters;
+	u16 num_clusters;
+	u16 max_clusters;
+	u16 current_cluster;
+	u32 current_sector;
+	u64 current_offset;
+	u8 loaded_sector[512];
+} FILE;
+
+s32 init_fat_filesystem();
+
+FILE * fat_open(u8 * filename);
+
+void * fat_close(FILE * fd);
+
+void fat_seek(FILE * fd, u32 byte);
+
+s32 fat_read(FILE * fd, u8 * buffer, u32 length);
+
+s32 fat_write(FILE * fd, u8 * buffer, u32 length);
+
+#endif /* FAT_FILESYSTEM_H_ */

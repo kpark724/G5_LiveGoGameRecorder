@@ -1,0 +1,141 @@
+#include "xparameters.h"
+#include "xil_types.h"
+#include "xspi.h"
+#include "platform.h"
+#include "xil_printf.h"
+#include "fat_filesystem.h"
+#include "string.h"
+
+#define BUF_SIZE 512
+#define HURP_SIZE 1024
+
+extern u8 spi_dev_status;
+extern void sd_trivial_delay(u32 cycles);
+extern volatile unsigned int * cd_ptr;
+extern FILESYSTEM_T FS_filesystem;
+
+//s32 allocate_new_cluster(FILE * fd);
+
+u8 buffer[BUF_SIZE];
+
+/*
+void init_microSD(CD_STATE state) {
+	if(state == CD_SET) {
+		SET_SD_POWER_STATE(ctrl_ptr);
+		xil_printf("MicroSD power state set high\n");
+	}
+	else {
+		UNSET_SD_POWER_STATE(ctrl_ptr);
+		xil_printf("MicroSD power state set low\n");
+	}
+}
+
+void update_cd_indicator(unsigned int state) {
+	if(state != CD_SET) {
+		UNSET_IND(ctrl_ptr);
+	}
+	else {
+		SET_IND(ctrl_ptr);
+	}
+
+	init_microSD(state);
+
+	return;
+}
+*/
+
+void print_str_buf(u8 * buf, u32 length) {
+	int i;
+
+	if(length < 0) {
+		xil_printf("Cannot print with negative length\n\r");
+		return;
+	}
+
+	for(i = 0; i < length; ++i) {
+		if((buf[i] >= (u8)' ' && buf[i] <= (u8)'~')) {
+			xil_printf("%c", (char)buf[i]);
+		}
+		else if(buf[i] == (u8)10) {
+			xil_printf("\n\r");
+		}
+		else {
+			//xil_printf("Extra Char: %02X\n", buf[i]);
+			continue;
+		}
+	}
+
+	return;
+}
+
+void print_fd(FATTIE * fd) {
+	int i;
+
+	print_str_buf(fd->filename, 8);
+	xil_printf("current_sector = %d\ncurrent_cluster = %d\ncurrent_offset = %d\n\r", fd->current_sector,
+																					fd->clusters[fd->current_cluster],
+																					fd->current_offset);
+	xil_printf("loaded_sec = %d\n\r", CLUSTER_SEC(fd));
+
+	//sd_debug_print_hex(fd->loaded_sector, SD_INIT_SEC_SIZE, 16);
+	xil_printf("num_clusters = %d\n\r", fd->num_clusters);
+	xil_printf("allocated clusters: ");
+	for(i = 0; i < fd->num_clusters; ++i) {
+		xil_printf("0x%02X ", fd->clusters[i]);
+	}
+	xil_printf("\n\r");
+	xil_printf("file_size = %d\n\r", fd->file_size);
+	xil_printf("file_dir_entry = %d; index = %d\n\r", fd->dir_entry_sec, fd->dir_entry_index);
+	return;
+}
+
+int main (){
+	s32 i, j;
+	s32 len, status;
+	FATTIE * fp;
+	u8 * str = (u8 *)"The Tragedie of Othello, the Moore of Venice\n			\nActus Primus. Scoena Prima.\n\nEnter Rodorigo, and Iago.\n\n  Rodorigo. Neuer tell me, I take it much vnkindly\nThat thou (Iago) who hast had my purse,\nAs if y strings were thine, should'st know of this\n\n   Ia. But you'l not heare me. If euer I did dream\nOf such a matter, abhorre me\n\n   Rodo. Thou told'st me,\nThou did'st hold him in thy hate\n\n   Iago. Despise me\nIf I do not. Three Great-ones of the Cittie,\n(In personall suite to make me his Lieutenant)\nOff-capt to him: and by the faith of man\nI know my price, I am worth no worsse a place.\nBut he (as louing his owne pride, and purposes)\nEuades them, with a bumbast Circumstance,\nHorribly stufft with Epithites of warre,\nNon-suites my Mediators. For certes, saies he,\nI haue already chose my Officer. And what was he?\nFor-sooth, a great Arithmatician,\nOne Michaell Cassio, a Florentine,\n(A Fellow almost damn'd in a faire Wife)\nThat neuer set a Squadron in the Field,\nNor the deuision of a Battaile knowes\nMore then a Spinster. Vnlesse the Bookish Theoricke:\nWherein the Tongued Consuls can propose\nAs Masterly as he. Meere pratle (without practise)\nIs all his Souldiership. But he (Sir) had th' election;\nAnd I (of whom his eies had seene the proofe\nAt Rhodes, at Ciprus, and on others grounds\nChristen'd, and Heathen) must be be-leed, and calm'd\nBy Debitor, and Creditor. This Counter-caster,\nHe (in good time) must his Lieutenant be,\nAnd I (blesse the marke) his Mooreships Auntient\n\n   Rod. By heauen, I rather would haue bin his hangman\n   \n   Iago. Why, there's no remedie.\n'Tis the cursse of Seruice;\nPreferment goes by Letter, and affection,\nAnd not by old gradation, where each second\nStood Heire to'th' first. Now Sir, be iudge your selfe,\nWhether I in any iust terme am Affin'd\nTo loue the Moore?\nRod. I would not follow him then\nIago. O Sir content you.\nI follow him, to serue my turne vpon him.\nWe cannot all be Masters, nor all Masters\nCannot be truely follow'd. You shall marke\nMany a dutious and knee-crooking knaue;\nThat (doting on his owne obsequious bondage)\nWeares out his time, much like his Masters Asse,\nFor naught but Prouender, & when he's old Casheer'd.\nWhip me such honest knaues. Others there are\nWho trym'd in Formes, and visages of Dutie,\nKeepe yet their hearts attending on themselues,\nAnd throwing but showes of Seruice on their Lords\nDoe well thriue by them.\nAnd when they haue lin'd their Coates\nDoe themselues Homage.\nThese Fellowes haue some soule,\nAnd such a one do I professe my selfe. For (Sir)\nIt is as sure as you are Rodorigo,\nWere I the Moore, I would not be Iago:\nIn following him, I follow but my selfe.\nHeauen is my Iudge, not I for loue and dutie,\nBut seeming so, for my peculiar end:\nFor when my outward Action doth demonstrate\nThe natiue act, and figure of my heart\nIn Complement externe, 'tis not long after\nBut I will weare my heart vpon my sleeue\nFor Dawes to pecke at; I am not what I am";
+
+	init_platform();
+
+	while(*cd_ptr != 0);
+
+	sd_trivial_delay(1000000);
+
+	spi_dev_status |= SD_FS_CARD_DETECT;
+
+	switch(init_fat_filesystem()) {
+	case 0:
+		xil_printf("microSD initialized successfully\n\r");
+		break;
+
+	default:
+		xil_printf("Exiting\n\r");
+		return -1;
+	}
+
+	fp = fat_open((u8 *)"OTHELLO2.TXT");
+
+	if(fp == NULL) {
+		xil_printf("Couldn't open file\n\r");
+		goto end;
+	}
+
+	print_fd(fp);
+
+	//for(i = 0; str[i] != (u8)'\0'; ++i);
+	i = strlen(str);
+
+	for(j = 0; j < 20; ++j) {
+		fat_write(fp, str, i);
+	}
+
+	print_fd(fp);
+
+	fat_close(fp);
+
+
+	end: sd_eject_card();
+
+
+	return 0;
+}

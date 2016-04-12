@@ -1,0 +1,46 @@
+#-----------------------------------------------------------
+# Webtalk v2015.3 (64-bit)
+# SW Build 1368829 on Mon Sep 28 20:06:43 MDT 2015
+# 
+# Start of session at: Mon Apr 04 00:52:48 2016
+# Process ID: 6036
+# Current directory: C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/webtalk
+# Command line: wbtcv.exe -mode batch -source sdk_webtalk.tcl
+# Log file: C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/webtalk/webtalk.log
+# Journal file: C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/webtalk\webtalk.jou
+#-----------------------------------------------------------
+source sdk_webtalk.tcl
+# webtalk_init -webtalk_dir C:\\Users\\Fadime\\Documents\\ECE532\\PROJECT\\NexysVideo-master\\Projects\\hdmi\\proj\\hdmi.sdk\\webtalk
+# webtalk_register_client -client project
+# webtalk_add_data -client project -key date_generated -value "Mon Apr 4 00:52:46 2016" -context "software_version_and_target_device"
+# webtalk_add_data -client project -key product_version -value "SDK v2015.3" -context "software_version_and_target_device"
+# webtalk_add_data -client project -key build_version -value "2015.3" -context "software_version_and_target_device"
+# webtalk_add_data -client project -key os_platform -value "amd64" -context "software_version_and_target_device"
+# webtalk_add_data -client project -key registration_id -value "" -context "software_version_and_target_device"
+# webtalk_add_data -client project -key tool_flow -value "SDK" -context "software_version_and_target_device"
+# webtalk_add_data -client project -key beta -value "false" -context "software_version_and_target_device"
+# webtalk_add_data -client project -key route_design -value "NA" -context "software_version_and_target_device"
+# webtalk_add_data -client project -key target_family -value "NA" -context "software_version_and_target_device"
+# webtalk_add_data -client project -key target_device -value "NA" -context "software_version_and_target_device"
+# webtalk_add_data -client project -key target_package -value "NA" -context "software_version_and_target_device"
+# webtalk_add_data -client project -key target_speed -value "NA" -context "software_version_and_target_device"
+# webtalk_add_data -client project -key random_id -value "herhk827330t01e8fs91tgvv2l" -context "software_version_and_target_device"
+# webtalk_add_data -client project -key project_id -value "2015.3_9" -context "software_version_and_target_device"
+# webtalk_add_data -client project -key project_iteration -value "9" -context "software_version_and_target_device"
+# webtalk_add_data -client project -key os_name -value "" -context "user_environment"
+# webtalk_add_data -client project -key os_release -value "" -context "user_environment"
+# webtalk_add_data -client project -key cpu_name -value "" -context "user_environment"
+# webtalk_add_data -client project -key cpu_speed -value "" -context "user_environment"
+# webtalk_add_data -client project -key total_processors -value "" -context "user_environment"
+# webtalk_add_data -client project -key system_ram -value "" -context "user_environment"
+# webtalk_register_client -client sdk
+# webtalk_add_data -client sdk -key uid -value "1459745174640" -context "sdk\\\\bsp/1459745174640"
+# webtalk_add_data -client sdk -key hwid -value "1459123765675" -context "sdk\\\\bsp/1459745174640"
+# webtalk_add_data -client sdk -key os -value "standalone" -context "sdk\\\\bsp/1459745174640"
+# webtalk_add_data -client sdk -key apptemplate -value "null" -context "sdk\\\\bsp/1459745174640"
+# webtalk_transmit -clientid 1904959182 -regid "" -xml C:\\Users\\Fadime\\Documents\\ECE532\\PROJECT\\NexysVideo-master\\Projects\\hdmi\\proj\\hdmi.sdk\\webtalk\\usage_statistics_ext_sdk.xml -html C:\\Users\\Fadime\\Documents\\ECE532\\PROJECT\\NexysVideo-master\\Projects\\hdmi\\proj\\hdmi.sdk\\webtalk\\usage_statistics_ext_sdk.html -wdm C:\\Users\\Fadime\\Documents\\ECE532\\PROJECT\\NexysVideo-master\\Projects\\hdmi\\proj\\hdmi.sdk\\webtalk\\sdk_webtalk.wdm -intro "<H3>SDK Usage Report</H3><BR>"
+
+    while executing
+"webtalk_transmit -clientid 1904959182 -regid "" -xml C:\\Users\\Fadime\\Documents\\ECE532\\PROJECT\\NexysVideo-master\\Projects\\hdmi\\proj\\hdmi.sdk\..."
+    (file "sdk_webtalk.tcl" line 29)
+INFO: [Common 17-206] Exiting Webtalk at Mon Apr 04 00:52:56 2016...

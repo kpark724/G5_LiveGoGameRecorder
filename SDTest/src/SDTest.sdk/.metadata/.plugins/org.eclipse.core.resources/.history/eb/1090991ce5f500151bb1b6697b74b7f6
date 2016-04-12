@@ -1,0 +1,458 @@
+/*
+ * sd_filesystem.c
+ *
+ *  Created on: Feb 29, 2016
+ *      Author: Jesse
+ */
+
+#include "sd_filesystem.h"
+#include "xil_printf.h"
+
+static SD_SPI_CONTROLLER * spi_dev_ptr = (SD_SPI_CONTROLLER *)XPAR_AXI_QUAD_SPI_0_BASEADDR;
+volatile unsigned int * cd_ptr = (unsigned int *)XPAR_IO_SD_CD_BASEADDR;
+static volatile unsigned int * ctrl_ptr = (unsigned int *)XPAR_IO_SD_CTRL_BASEADDR;
+
+u32 spi_dev_status = 0;
+static u64 sd_sector;
+static u32 sd_offset;
+
+static void sd_power_card(u8 new_state) {
+	if(new_state) {
+		SET_SD_POWER_STATE(ctrl_ptr);
+		spi_dev_status |= SD_FS_CARD_POWERED;
+	}
+	else {
+		CLR_SD_POWER_STATE(ctrl_ptr);
+		spi_dev_status &= ~SD_FS_CARD_POWERED;
+	}
+
+	return;
+}
+
+static u32 card_status_check(u32 prnt_error) {
+	if(!(spi_dev_status & SD_FS_CARD_DETECT)) {
+		if(prnt_error)
+			xil_printf("Error: SD card not detected!\n");
+		return SD_FS_CARD_DETECT;
+	}
+
+	if(!(spi_dev_status & SD_FS_CARD_CONFIG)) {
+		if(prnt_error)
+			xil_printf("Error: SD card not properly configured in SPI mode!\n");
+		return SD_FS_CARD_CONFIG;
+	}
+
+	if(!(spi_dev_status & SD_FS_FAT_MOUNTED)) {
+		if(prnt_error)
+			xil_printf("Error: FAT file system not mounted!\n");
+		return SD_FS_FAT_MOUNTED;
+	}
+
+	return 0;
+}
+
+u8 spi_write_byte(u8 value) {
+	u8 read_value;
+	u32 status;
+
+	if(card_status_check(0) == SD_FS_CARD_DETECT) {
+		xil_printf("Error: SD card not detected; Unable to write value!\n");
+		return 0;
+	}
+
+	//ensure inhibit bit set
+	spi_dev_ptr->spi_ctrl_reg |= SD_CTRL_TRANS_INHIB;
+
+	//insert outbound value into TX FIFO
+	spi_dev_ptr->spi_tx_reg = value;
+
+	//begin transmission
+	spi_dev_ptr->spi_ctrl_reg &= ~SD_CTRL_TRANS_INHIB;
+
+	//wait until tranfer is comlete
+	status = spi_dev_ptr->spi_status_reg;
+	while(status & SD_SR_TX_FULL) {
+		status = spi_dev_ptr->spi_status_reg;
+	}
+
+	read_value = spi_dev_ptr->spi_rx_reg;
+
+	spi_dev_ptr->spi_ctrl_reg |= SD_CTRL_TRANS_INHIB;
+
+	return read_value;
+}
+
+void spi_transfer_buffer(u8 * src_buf, u8 * dest_buf, u32 bytes) {
+	int i;
+	u8 to_send;
+	u8 to_rec;
+
+	CLR_CS(spi_dev_ptr);
+
+	for(i = 0; i < bytes; ++i) {
+		if(src_buf != NULL) {
+			to_send = src_buf[i];
+		}
+		else {
+			to_send = 0xFF;
+		}
+
+		to_rec = spi_write_byte(to_send);
+
+		if(dest_buf != NULL) {
+			dest_buf[i] = to_rec;
+		}
+	}
+
+	SET_CS(spi_dev_ptr);
+
+	return;
+}
+
+u8 sd_calc_crc7(u8 crc, u8 message) {
+	u8 cbit;
+	int i;
+
+	for(i = 0; i < 8; ++i) {
+		cbit = (crc ^ message) & 0x80;
+		message <<= 1;
+		cbit = (cbit >> 6) | (cbit >> 3);
+		crc = (crc << 1) ^ cbit;
+	}
+
+	return crc;
+}
+
+u16 sd_calc_crc16(u16 crc, u16 message) {
+	u16 cbit;
+	int i;
+
+	for(i = 0; i < 16; ++i) {
+		cbit = (crc ^ message) & 0x8000;
+		message <<= 1;
+		cbit = (cbit >> 3) | (cbit >> 10) | (cbit >> 15);
+		crc = (crc << 1) ^ cbit;
+	}
+
+	return crc;
+}
+
+u8 sd_send_command(u8 cmd, u8 par0, u8 par1, u8 par2, u8 par3, u8 crc, u8 read) {
+	int i;
+	u8 read_byte;
+	u8 ret_byte = 0xFF;
+
+	//CLR_CS(spi_dev_ptr);
+
+	spi_write_byte(cmd);
+	spi_write_byte(par0);
+	spi_write_byte(par1);
+	spi_write_byte(par2);
+	spi_write_byte(par3);
+	spi_write_byte(crc);
+
+	for(i = 0; i < read; ++i) {
+		read_byte = spi_write_byte(0xFF);
+		if(read_byte != 0xFF && ret_byte == 0xFF)
+			ret_byte = read_byte;
+	}
+
+	//SET_CS(spi_dev_ptr);
+
+	return ret_byte;
+}
+
+void sd_trivial_delay(int cycles) {
+	int i;
+
+	for(i = 0; i < cycles; ++i);
+
+	return;
+}
+
+s32 sd_init_card() {
+	u8 temp_value;
+	int i;
+
+	if(spi_dev_status & SD_FS_CARD_CONFIG) {
+		xil_printf("Error: SD card already configured!\n");
+		return -1;
+	}
+	else if(!(spi_dev_status & SD_FS_CARD_DETECT)) {
+		xil_printf("Error: SD card not detected!\n");
+		return -2;
+	}
+
+	sd_power_card(1);
+
+	//disable interrupts
+	spi_dev_ptr->global_intr_en = 0;
+	spi_dev_ptr->intr_en_reg = 0;
+
+	//initialize control register and slave select
+	spi_dev_ptr->spi_ctrl_reg = SD_CTRL_SYS_EN | \
+								SD_CTRL_MASTER_MODE | \
+								SD_CTRL_MAN_SLV_SEL | \
+								SD_CTRL_TRANS_INHIB;
+
+	//spi_dev_ptr->spi_slv_sel = 0;
+
+	//idle clock for ~80 clock cycles without CS enabled
+	SET_CS(spi_dev_ptr);
+
+	for(i = 0; i < SD_INIT_PRE_CLKS; ++i) {
+		spi_write_byte(0xFF);
+	}
+
+	//attempt to init sd card into SPI mode (10 attempts)
+	for(i = 0; i < SD_INIT_ATTEMPTS; ++i) {
+		CLR_CS(spi_dev_ptr);
+
+		temp_value = sd_send_command(0x40, 0, 0, 0, 0, 0x95, SD_INIT_CMD_READS);
+
+		SET_CS(spi_dev_ptr);
+		//xil_printf("%2X ", temp_value);
+		if(temp_value == 1)
+			break;
+
+		sd_trivial_delay(100000);
+	}
+
+	//xil_printf("\n");
+	if(i == SD_INIT_ATTEMPTS) {
+		xil_printf("Error: SD card wasn't initialized!\n");
+		return -3;
+	}
+
+	//poll sd card 10 times to check if it exits idle mode
+	for(i = 0; i < SD_INIT_ATTEMPTS; ++i) {
+		CLR_CS(spi_dev_ptr);
+		temp_value = sd_send_command(0x41, 0, 0, 0, 0, 0xFF, SD_INIT_CMD_READS);
+		SET_CS(spi_dev_ptr);
+
+		if(temp_value == 0)
+			break;
+
+		sd_trivial_delay(100000);
+	}
+
+	if(i == SD_INIT_ATTEMPTS) {
+		xil_printf("Error: SD card didn't exit idle mode!\n");
+		return -4;
+	}
+
+	//set block read length to 512 bits
+	CLR_CS(spi_dev_ptr);
+	sd_send_command(0x50, 0, 0, 2, 0, 0xFF, 8);
+	SET_CS(spi_dev_ptr);
+
+	sd_sector = 0;
+	sd_offset = 0;
+
+	spi_dev_status |= SD_FS_CARD_CONFIG;
+
+	return 0;
+}
+
+s32 sd_read(u64 sector, u32 offset, u8 * buffer, u32 bytes) {
+	int i;
+	s32 count = 0;
+	u8 temp;
+	u16 message;
+	u16 crc = 0x0000;
+
+	CLR_CS(spi_dev_ptr);
+
+	spi_write_byte(0x51); //0x51 is the special version of the command
+	spi_write_byte((sector>>15) & 0xFF);
+	spi_write_byte((sector>>7) & 0xFF);
+	spi_write_byte((sector<<1) & 0xFF);
+	spi_write_byte(0);
+	spi_write_byte(0xFF); //commands don't need checksum in spi mode
+
+	for(i = 0; i < 10; ++i) {
+		temp = spi_write_byte(0xFF);
+		if(temp != (u8)0xFF) {
+			if(temp == 0) {
+				xil_printf("Read command recieved!\n");
+				break;
+			}
+			else if((temp & 0x7F) != 0) {
+				xil_printf("READ ERROR CODE: 0x%02X\n", temp);
+				SET_CS(spi_dev_ptr);
+				return SD_READ_ERROR;
+			}
+		}
+	}
+
+	for(i = 0; i < 10; ++i) {
+		if(spi_write_byte(0xFF) == 0xFE) {
+			xil_printf("Read start...\n");
+			break;
+		}
+	}
+
+	for(i = 0; i < offset; ++i) {
+		temp = spi_write_byte(0xFF);
+
+		if(i % 2 == 0)
+			message = temp << 8;
+		else {
+			message |= temp;
+			crc = sd_calc_crc16(crc, message);
+		}
+	}
+
+	for(i = 0; i < bytes; ++i) {
+		temp = spi_write_byte(0xFF);
+		buffer[i] = temp;
+
+		count += 1;
+
+		if((i + offset) % 2 == 0)
+			message = temp << 8;
+		else {
+			message |= temp;
+			crc = sd_calc_crc16(crc, message);
+		}
+	}
+
+	for(i += offset; i < 512; ++i) {
+		temp = spi_write_byte(0xFF);
+
+		if(i % 2 == 0)
+			message = temp << 8;
+		else{
+			message |= temp;
+			crc = sd_calc_crc16(crc, message);
+		}
+	}
+
+	//ignoring checksum for now
+	temp = spi_write_byte(0xFF);
+	message = temp << 8;
+	temp = spi_write_byte(0xFF);
+	message |= temp;
+
+	SET_CS(spi_dev_ptr);
+
+	xil_printf("Checksum = 0x%04X (should be 0x%04X)\n", crc, message);
+
+	if(sd_calc_crc16(crc, message) != 0) {
+		xil_printf("Error: checksum does not match!\n");
+		return -1;
+	}
+
+	//xil_printf("Check Eval = 0x%04X (should be 0x0000)\n", crc);
+
+	return count;
+}
+
+void sd_debug_print_hex(u8 * buffer, u32 length, u8 line) {
+	int i = 0;
+
+	for(i = 0; i < length; ++i) {
+		if(i % line == 0 && i != 0) {
+			xil_printf("\n");
+		}
+
+		xil_printf("%02X ", buffer[i]);
+	}
+
+	xil_printf("\n");
+
+	return;
+}
+
+void sd_eject_card() {
+
+	spi_dev_status &= ~SD_FS_CARD_CONFIG;
+
+	sd_power_card(0);
+
+	return;
+}
+
+s32 sd_write(u64 sector, u32 offset, u8 * buffer, u32 bytes) {
+	int i;
+	u8 temp;
+	u16 message;
+	u16 crc = 0x0000;
+	u8 rbuffer[512];
+
+	sd_read(sector, 0, rbuffer, 512); //need to read block before modifying
+
+	for(i = 0; i < bytes; ++i) {
+		rbuffer[i + offset] = buffer[i];
+	}
+
+	//sd_debug_print_hex(rbuffer, 512, 16);
+
+	CLR_CS(spi_dev_ptr);
+
+	spi_write_byte(0x58);
+	spi_write_byte((sector>>15) & 0xFF);
+	spi_write_byte((sector>>7) & 0xFF);
+	spi_write_byte((sector<<1) & 0xFF);
+	spi_write_byte(0);
+	spi_write_byte(0xFF);
+
+	for(i = 0; i < 10; ++i) {
+		if(spi_write_byte(0xFF) == 0) {
+			xil_printf("Write command received\n");
+			break;
+		}
+	}
+
+	for(i = 0; i < 8; ++i)
+		spi_write_byte(0xFF);
+
+	spi_write_byte(0xFE);
+	xil_printf("Write start...\n");
+
+	for(i = 0; i < 512; i += 1) {
+		temp = rbuffer[i];
+		rbuffer[i] = spi_write_byte(rbuffer[i]);
+
+		if(i % 2 == 0)
+			message = temp << 8;
+		else{
+			message |= temp;
+			crc = sd_calc_crc16(crc, message);
+		}
+	}
+
+	//write checksum
+	spi_write_byte((u8)(crc >> 8));
+	spi_write_byte((u8)(crc & 0xFF));
+
+	do {
+		temp = spi_write_byte(0xFF);
+	}while(temp == 0xFF);
+
+	switch((temp & 0x14) >> 1) {
+		case 2:
+			xil_printf("Data write accepted!\n");
+			break;
+		case 5:
+			xil_printf("Error: Data write rejected; Invalid CRC!\n");
+			SET_CS(spi_dev_ptr);
+			return -1;
+			break;
+		case 6:
+			xil_printf("Error: Data write rejected; Write error!\n");
+			SET_CS(spi_dev_ptr);
+			return -2;
+			break;
+		default:
+			xil_printf("Unrecognized Response\n");
+	}
+
+	do {
+		temp = spi_write_byte(0xFF);
+	}while(temp == 0);
+
+	SET_CS(spi_dev_ptr);
+
+	return 0;
+}

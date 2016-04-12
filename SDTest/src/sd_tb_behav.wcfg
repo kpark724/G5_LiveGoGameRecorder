@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="sd_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="ipif_pkg" />
+            <top_module name="lib_pkg" />
+            <top_module name="lmb_bram_if_funcs" />
+            <top_module name="sd_tb" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="2651fs"></ZoomEndTime>
+      <Cursor1Time time="0fs"></Cursor1Time>
+   </zoom_setting>
+   <WVObjectSize size="22" />
+   <wvobject db_ref_id="1" fp_name="/sd_tb/clock_rtl" type="logic">
+      <obj_property name="ElementShortName">clock_rtl</obj_property>
+      <obj_property name="ObjectShortName">clock_rtl</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" fp_name="/sd_tb/gpio_io_i" type="logic">
+      <obj_property name="ElementShortName">gpio_io_i</obj_property>
+      <obj_property name="ObjectShortName">gpio_io_i</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" fp_name="/sd_tb/gpio_io_o" type="array">
+      <obj_property name="ElementShortName">gpio_io_o[1:0]</obj_property>
+      <obj_property name="ObjectShortName">gpio_io_o[1:0]</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" fp_name="/sd_tb/MISO" type="logic">
+      <obj_property name="ElementShortName">MISO</obj_property>
+      <obj_property name="ObjectShortName">MISO</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" fp_name="/sd_tb/MOSI" type="logic">
+      <obj_property name="ElementShortName">MOSI</obj_property>
+      <obj_property name="ObjectShortName">MOSI</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" fp_name="/sd_tb/reset" type="logic">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" fp_name="/sd_tb/sclk" type="logic">
+      <obj_property name="ElementShortName">sclk</obj_property>
+      <obj_property name="ObjectShortName">sclk</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" fp_name="/sd_tb/chip_sel" type="logic">
+      <obj_property name="ElementShortName">chip_sel</obj_property>
+      <obj_property name="ObjectShortName">chip_sel</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" fp_name="/sd_tb/utx" type="logic">
+      <obj_property name="ElementShortName">utx</obj_property>
+      <obj_property name="ObjectShortName">utx</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" fp_name="/sd_tb/urx" type="logic">
+      <obj_property name="ElementShortName">urx</obj_property>
+      <obj_property name="ObjectShortName">urx</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" fp_name="/sd_tb/rtx" type="logic">
+      <obj_property name="ElementShortName">rtx</obj_property>
+      <obj_property name="ObjectShortName">rtx</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider14">
+      <obj_property name="label">SPI BLOCK</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" fp_name="/sd_tb/DUT/design_1_i/axi_quad_spi_0/s_axi_awaddr" type="array">
+      <obj_property name="ElementShortName">s_axi_awaddr[6:0]</obj_property>
+      <obj_property name="ObjectShortName">s_axi_awaddr[6:0]</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" fp_name="/sd_tb/DUT/design_1_i/axi_quad_spi_0/s_axi_awvalid" type="logic">
+      <obj_property name="ElementShortName">s_axi_awvalid</obj_property>
+      <obj_property name="ObjectShortName">s_axi_awvalid</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" fp_name="/sd_tb/DUT/design_1_i/axi_quad_spi_0/s_axi_awready" type="logic">
+      <obj_property name="ElementShortName">s_axi_awready</obj_property>
+      <obj_property name="ObjectShortName">s_axi_awready</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" fp_name="/sd_tb/DUT/design_1_i/axi_quad_spi_0/s_axi_wdata" type="array">
+      <obj_property name="ElementShortName">s_axi_wdata[31:0]</obj_property>
+      <obj_property name="ObjectShortName">s_axi_wdata[31:0]</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" fp_name="/sd_tb/DUT/design_1_i/axi_quad_spi_0/s_axi_wvalid" type="logic">
+      <obj_property name="ElementShortName">s_axi_wvalid</obj_property>
+      <obj_property name="ObjectShortName">s_axi_wvalid</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" fp_name="/sd_tb/DUT/design_1_i/axi_quad_spi_0/s_axi_wready" type="logic">
+      <obj_property name="ElementShortName">s_axi_wready</obj_property>
+      <obj_property name="ObjectShortName">s_axi_wready</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" fp_name="/sd_tb/DUT/design_1_i/axi_quad_spi_0/s_axi_araddr" type="array">
+      <obj_property name="ElementShortName">s_axi_araddr[6:0]</obj_property>
+      <obj_property name="ObjectShortName">s_axi_araddr[6:0]</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" fp_name="/sd_tb/DUT/design_1_i/axi_quad_spi_0/s_axi_arvalid" type="logic">
+      <obj_property name="ElementShortName">s_axi_arvalid</obj_property>
+      <obj_property name="ObjectShortName">s_axi_arvalid</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" fp_name="/sd_tb/DUT/design_1_i/axi_quad_spi_0/s_axi_arready" type="logic">
+      <obj_property name="ElementShortName">s_axi_arready</obj_property>
+      <obj_property name="ObjectShortName">s_axi_arready</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" fp_name="/sd_tb/DUT/design_1_i/axi_quad_spi_0/s_axi_rdata" type="array">
+      <obj_property name="ElementShortName">s_axi_rdata[31:0]</obj_property>
+      <obj_property name="ObjectShortName">s_axi_rdata[31:0]</obj_property>
+   </wvobject>
+</wave_config>

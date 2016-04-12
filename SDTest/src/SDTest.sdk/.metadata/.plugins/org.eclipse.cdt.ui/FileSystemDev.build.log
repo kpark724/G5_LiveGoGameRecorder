@@ -1,0 +1,6 @@
+03:59:23 **** Incremental Build of configuration Debug for project FileSystemDev ****
+make all 
+make: Nothing to be done for `all'.
+
+03:59:24 Build Finished (took 150ms)
+

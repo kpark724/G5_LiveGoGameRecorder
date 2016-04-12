@@ -1,0 +1,176 @@
+#include "xparameters.h"
+#include "xil_types.h"
+#include "xspi.h"
+#include "platform.h"
+#include "xil_printf.h"
+#include "fat_filesystem.h"
+#include "string.h"
+
+#define BUF_SIZE 512
+#define HURP_SIZE 1024
+
+extern u8 spi_dev_status;
+extern void sd_trivial_delay(u32 cycles);
+extern volatile unsigned int * cd_ptr;
+extern FILESYSTEM_T FS_filesystem;
+
+//s32 allocate_new_cluster(FILE * fd);
+
+u8 buffer[BUF_SIZE];
+
+/*
+void init_microSD(CD_STATE state) {
+	if(state == CD_SET) {
+		SET_SD_POWER_STATE(ctrl_ptr);
+		xil_printf("MicroSD power state set high\n");
+	}
+	else {
+		UNSET_SD_POWER_STATE(ctrl_ptr);
+		xil_printf("MicroSD power state set low\n");
+	}
+}
+
+void update_cd_indicator(unsigned int state) {
+	if(state != CD_SET) {
+		UNSET_IND(ctrl_ptr);
+	}
+	else {
+		SET_IND(ctrl_ptr);
+	}
+
+	init_microSD(state);
+
+	return;
+}
+*/
+
+void print_str_buf(u8 * buf, u32 length) {
+	int i;
+
+	if(length < 0) {
+		xil_printf("Cannot print with negative length\n\r");
+		return;
+	}
+
+	for(i = 0; i < length; ++i) {
+		if((buf[i] >= (u8)' ' && buf[i] <= (u8)'~')) {
+			xil_printf("%c", (char)buf[i]);
+		}
+		else if(buf[i] == (u8)10) {
+			xil_printf("\n\r");
+		}
+		else {
+			//xil_printf("Extra Char: %02X\n", buf[i]);
+			continue;
+		}
+	}
+
+	return;
+}
+
+void print_fd(FATTIE * fd) {
+	int i;
+
+	print_str_buf(fd->filename, 8);
+	xil_printf("current_sector = %d\ncurrent_cluster = %d\ncurrent_offset = %d\n\r", fd->current_sector,
+																					fd->clusters[fd->current_cluster],
+																					fd->current_offset);
+	xil_printf("loaded_sec = %d\n\r", CLUSTER_SEC(fd));
+
+	//sd_debug_print_hex(fd->loaded_sector, SD_INIT_SEC_SIZE, 16);
+	xil_printf("num_clusters = %d\n\r", fd->num_clusters);
+	xil_printf("allocated clusters: ");
+	for(i = 0; i < fd->num_clusters; ++i) {
+		xil_printf("0x%02X ", fd->clusters[i]);
+	}
+	xil_printf("\n\r");
+	xil_printf("file_size = %d\n\r", fd->file_size);
+	xil_printf("file_dir_entry = %d; index = %d\n\r", fd->dir_entry_sec, fd->dir_entry_index);
+	return;
+}
+
+int main (){
+	//s32 i, j;
+	//s32 len, status;
+	FATTIE * fp;
+
+	init_platform();
+
+	while(*cd_ptr != 0);
+
+	sd_trivial_delay(1000000);
+
+	spi_dev_status |= SD_FS_CARD_DETECT;
+
+	switch(init_fat_filesystem()) {
+	case 0:
+		xil_printf("microSD initialized successfully\n\r");
+		break;
+
+	default:
+		xil_printf("Exiting\n\r");
+		return -1;
+	}
+
+	fp = fat_open((u8 *)"SGFTEST1.SGF");
+
+	if(fp == NULL) {
+		xil_printf("Couldn't open file\n\r");
+		goto end;
+	}
+
+	// Pass in the sgf config structure into init_sgf_file() for writing the header of SGF
+	init_sgf_file(fp);
+
+
+	/* Read from memory */
+
+	// Just for testing the function out
+	Move one, two, three, four;
+	one.stoneColor = BLACK_STONE;
+	one.stoneX = 3;
+	one.stoneY = 3;
+
+	two.stoneColor = WHITE_STONE;
+	two.stoneX = 15;
+	two.stoneY = 15;
+
+	three.stoneColor = BLACK_STONE;
+	three.stoneX = 15;
+	three.stoneY = 3;
+
+	four.stoneColor = WHITE_STONE;
+	four.stoneX = 3;
+	four.stoneY = 15;
+
+	// This is where you append the newly placed stone in the SGF file (filename)
+	// Obviously, you can just declare one Move struct and reuse it using a while loop until stoneColor == 0 like below
+	write_sgf_move(fp, one.stoneX, one.stoneY, one.stoneColor);
+	write_sgf_move(fp, two.stoneX, two.stoneY, two.stoneColor);
+	write_sgf_move(fp, three.stoneX, three.stoneY, three.stoneColor);
+	write_sgf_move(fp, four.stoneX, four.stoneY, four.stoneColor);
+
+	/*
+	Move tmp;
+	unsigned int offset = 0;
+
+	tmp = *(some_memory_address + offset);
+
+	while(tmp.stoneColor != NO_STONE) {
+		write_sgf_move(filename, tmp.stoneX, tmp.stoneY, tmp.stoneColor);
+		offset += 3;    // The structs are stacked perfectly into the memory, so add 3 bytes.
+		tmp = *(some_memory_address + offset);
+	}
+	*/
+
+	/* Write a simple ")" to close off the main branch in SGF */
+	// You may want to read extra Move from the memory and check if the stoneColor == 0;
+	end_sgf_file(fp);
+
+	fat_close(fp);
+
+	end: sd_eject_card();
+
+
+	return 0;
+}

@@ -1,0 +1,1004 @@
+20:09:07 INFO  : Launching XSDB server: xsdb.bat C:/Xilinx/SDK/2015.3/scripts/xsdb/xsdb/xsdb-server.tcl
+20:09:23 INFO  : XSDB server has started successfully.
+20:09:24 INFO  : Processing command line option -hwspec C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/hdmi_wrapper.hdf.
+20:16:43 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+20:16:46 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Nexys Video 210276723614B" && level==0} -index 0' command is executed.
+20:16:53 INFO  : FPGA configured successfully with bitstream "C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/hdmi_wrapper_hw_platform_0/download.bit"
+20:18:31 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+20:18:32 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Nexys Video 210276723614B" && level==0} -index 0' command is executed.
+20:18:37 INFO  : FPGA configured successfully with bitstream "C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/hdmi_wrapper_hw_platform_0/download.bit"
+20:19:06 INFO  : Processor reset is completed for microblaze_0
+20:21:55 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+20:21:55 INFO  : 'targets -set -filter {jtag_cable_name =~ "Digilent Nexys Video 210276723614B" && level==0} -index 0' command is executed.
+20:22:01 INFO  : FPGA configured successfully with bitstream "C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/hdmi_wrapper_hw_platform_0/download.bit"
+20:22:11 INFO  : Processor reset is completed for microblaze_0
+21:00:58 ERROR : Unexpected error while parsing XMD response ?: com.google.gson.JsonSyntaxException: com.google.gson.stream.MalformedJsonException: invalid number or unquoted string near 
+14:45:40 INFO  : Launching XSDB server: xsdb.bat C:/Xilinx/SDK/2015.3/scripts/xsdb/xsdb/xsdb-server.tcl
+14:45:43 INFO  : XSDB server has started successfully.
+14:45:43 INFO  : Processing command line option -hwspec C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/hdmi_wrapper.hdf.
+14:45:44 INFO  : Checking for hwspec changes in the project hdmi_wrapper_hw_platform_0.
+14:52:04 INFO  : Launching XSDB server: xsdb.bat C:/Xilinx/SDK/2015.3/scripts/xsdb/xsdb/xsdb-server.tcl
+14:52:07 INFO  : XSDB server has started successfully.
+14:52:07 INFO  : Processing command line option -hwspec C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/hdmi_wrapper.hdf.
+14:52:08 INFO  : Checking for hwspec changes in the project hdmi_wrapper_hw_platform_0.
+14:54:57 INFO  : Processor reset is completed for microblaze_0
+14:55:41 INFO  : Processor reset is completed for microblaze_0
+18:30:51 ERROR : Unexpected error while parsing XMD response ?: com.google.gson.JsonSyntaxException: com.google.gson.stream.MalformedJsonException: invalid number or unquoted string near 
+11:53:55 INFO  : Launching XSDB server: xsdb.bat C:/Xilinx/SDK/2015.3/scripts/xsdb/xsdb/xsdb-server.tcl
+11:54:01 INFO  : XSDB server has started successfully.
+11:54:11 INFO  : Processing command line option -hwspec C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/hdmi_wrapper.hdf.
+11:54:11 INFO  : Checking for hwspec changes in the project hdmi_wrapper_hw_platform_0.
+11:55:15 INFO  : Processor reset is completed for microblaze_0
+12:24:43 ERROR : Unexpected error while parsing XMD response ?: com.google.gson.JsonSyntaxException: com.google.gson.stream.MalformedJsonException: invalid number or unquoted string near 
+15:28:51 INFO  : Launching XSDB server: xsdb.bat C:/Xilinx/SDK/2015.3/scripts/xsdb/xsdb/xsdb-server.tcl
+15:28:57 INFO  : XSDB server has started successfully.
+15:29:05 INFO  : Processing command line option -hwspec C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/hdmi_wrapper.hdf.
+15:29:05 INFO  : Checking for hwspec changes in the project hdmi_wrapper_hw_platform_0.
+15:31:24 INFO  : Processor reset is completed for microblaze_0
+15:37:40 INFO  : Processor reset is completed for microblaze_0
+15:41:47 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+15:41:49 INFO  : Processor reset is completed for microblaze_0
+15:48:44 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+15:49:20 INFO  : Processor reset is completed for microblaze_0
+15:54:02 INFO  : Processor reset is completed for microblaze_0
+16:12:41 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+16:12:45 INFO  : Processor reset is completed for microblaze_0
+16:12:47 ERROR : Unexpected error while launching program.
+java.lang.RuntimeException: Cannot perform the Debug Command
+
+    Failed to lock the JTAG Cable for exclusive access
+
+
+	at com.xilinx.sdk.targetmanager.internal.TM.continueExecution(TM.java:749)
+	at com.xilinx.sdk.debug.core.internal.AppRunner.run(AppRunner.java:150)
+	at com.xilinx.sdk.debug.core.XilinxAppLaunchConfigurationDelegate.runApplication(XilinxAppLaunchConfigurationDelegate.java:609)
+	at com.xilinx.sdk.debug.core.XilinxAppLaunchConfigurationDelegate.launch(XilinxAppLaunchConfigurationDelegate.java:296)
+	at com.xilinx.sdk.debug.ui.XilinxAppLaunchDelegateWrapper.launch(XilinxAppLaunchDelegateWrapper.java:31)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:858)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:707)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin.buildAndLaunch(DebugUIPlugin.java:1018)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin$8.run(DebugUIPlugin.java:1222)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:53)
+16:14:03 ERROR : Unexpected error while parsing XMD response ?: com.google.gson.JsonSyntaxException: com.google.gson.stream.MalformedJsonException: invalid number or unquoted string near 
+16:14:49 INFO  : Launching XSDB server: xsdb.bat C:/Xilinx/SDK/2015.3/scripts/xsdb/xsdb/xsdb-server.tcl
+16:14:52 INFO  : Launching XSDB server: xsdb.bat C:/Xilinx/SDK/2015.3/scripts/xsdb/xsdb/xsdb-server.tcl
+16:14:54 INFO  : XSDB server has started successfully.
+16:14:54 INFO  : XSDB server has started successfully.
+16:14:54 ERROR : Failed to call init_repo
+java.io.IOException: Command [C 1 xsdb eval "::hsi::utils::init_repo"] aborted
+	at org.eclipse.tcf.core.AbstractChannel$9.run(AbstractChannel.java:753)
+	at org.eclipse.tcf.EventQueue.run(EventQueue.java:95)
+	at java.lang.Thread.run(Thread.java:745)
+Caused by: java.net.SocketException: Connection reset
+	at java.net.SocketInputStream.read(SocketInputStream.java:209)
+	at java.net.SocketInputStream.read(SocketInputStream.java:141)
+	at java.io.BufferedInputStream.read1(BufferedInputStream.java:284)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:345)
+	at java.io.FilterInputStream.read(FilterInputStream.java:107)
+	at org.eclipse.tcf.core.ChannelTCP.get(ChannelTCP.java:162)
+	at org.eclipse.tcf.core.StreamChannel.read(StreamChannel.java:84)
+	at org.eclipse.tcf.core.AbstractChannel$1.run(AbstractChannel.java:254)
+16:14:54 ERROR : Exception rasied in executing the command =Failed to call init_repo 
+16:14:54 INFO  : Processing command line option -hwspec C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/hdmi_wrapper.hdf.
+16:14:55 INFO  : Checking for hwspec changes in the project hdmi_wrapper_hw_platform_0.
+16:14:55 INFO  : Launching XSDB server: xsdb.bat C:/Xilinx/SDK/2015.3/scripts/xsdb/xsdb/xsdb-server.tcl
+16:15:52 INFO  : Launching XSDB server: xsdb.bat C:/Xilinx/SDK/2015.3/scripts/xsdb/xsdb/xsdb-server.tcl
+16:15:55 INFO  : XSDB server has started successfully.
+16:15:55 INFO  : Processing command line option -hwspec C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/hdmi_wrapper.hdf.
+16:15:56 INFO  : Checking for hwspec changes in the project hdmi_wrapper_hw_platform_0.
+16:15:56 INFO  : SDK has detected change in the last modified timestamps for source hardware specification file Source:1459275700328,  Project:1459123435878
+16:15:56 INFO  : The hardware specification for project 'hdmi_wrapper_hw_platform_0' is different from C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/hdmi_wrapper.hdf.
+16:15:57 INFO  : Copied contents of C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/hdmi_wrapper.hdf into \hdmi_wrapper_hw_platform_0\system.hdf.
+16:16:27 INFO  : Synchronizing projects in the workspace with the hardware platform specification changes.
+16:16:28 ERROR : (XSDB Server)ERROR: [Hsi 55-1433] Error boost::filesystem::directory_iterator::construct: Access is denied: "C:/Users/Fadime/AppData/Local/Temp\9E2D00F8-BAB0-7891-BAD9-6EB056F1CF9E"
+
+16:16:28 ERROR : (XSDB Server)ERROR: [Hsi 55-1433] Error boost::filesystem::directory_iterator::construct: Access is denied: "C:/Users/Fadime/AppData/Local/Temp\ibtmp7c69303"
+ERROR: [Hsi 55-1433] Error boost::filesystem::directory_iterator::construct: Access is denied: "C:/Users/Fadime/AppData/Local/Temp\ibtmp92fd302"
+ERROR: [Hsi 55-1433] Error boost::filesystem::directory_iterator::construct: Access is denied: "C:/Users/Fadime/AppData/Local/Temp\ibtmp94d3285"
+ERROR: [Hsi 55-1433] Error boost::filesystem::directory_iterator::construct: Access is denied: "C:/Users/Fadime/AppData/Local/Temp\ibtmpa27e462"
+ERROR: [Hsi 55-1433] Error boost::filesystem::directory_iterator::construct: Access is denied: "C:/Users/Fadime/AppData/Local/Temp\ibtmpc2f8301"
+ERROR: [Hsi 55-1433] Error boost::filesystem::directory_iterator::construct: Access is denied: "C:/Users/Fadime/AppData/Local/Temp\ibtmpdd36304"
+ERROR: [Hsi 55-1433] Error boost::filesystem::directory_iterator::construct: Access is denied: "C:/Users/Fadime/AppData/Local/Temp\is1373634743"
+ERROR: [Hsi 55-1433] Error boost::filesystem::directory_iterator::construct: Access is denied: "C:/Users/Fadime/AppData/Local/Temp\is1668783924"
+ERROR: [Hsi 55-1433] Error boost::filesystem::directory_iterator::construct: Access is denied: "C:/Users/Fadime/AppData/Local/Temp\is256538528"
+
+16:16:28 ERROR : Failed to call sync_sw_with_hw_change
+Reason: ERROR: [Common 17-39] 'hsi::open_sw_design' failed due to earlier errors.
+
+16:16:28 ERROR : Error updating BSP project MSS files.
+16:16:30 INFO  : Updating hardware inferred compiler options for videodemo.
+16:16:30 INFO  : Clearing existing target manager status.
+16:16:38 INFO  : Processor reset is completed for microblaze_0
+16:16:57 INFO  : Processor reset is completed for microblaze_0
+16:17:48 INFO  : Processor reset is completed for microblaze_0
+16:22:20 INFO  : Processor reset is completed for microblaze_0
+16:23:47 INFO  : Processor reset is completed for microblaze_0
+16:24:52 INFO  : Processor reset is completed for microblaze_0
+16:24:58 INFO  : Processor reset is completed for microblaze_0
+16:26:56 INFO  : Processor reset is completed for microblaze_0
+16:35:17 INFO  : Processor reset is completed for microblaze_0
+16:35:34 INFO  : Processor reset is completed for microblaze_0
+16:37:40 INFO  : Processor reset is completed for microblaze_0
+16:38:05 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+16:38:08 INFO  : Processor reset is completed for microblaze_0
+16:42:23 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+16:42:26 INFO  : Processor reset is completed for microblaze_0
+16:43:11 ERROR : Unexpected error while parsing XMD response ?: com.google.gson.JsonSyntaxException: com.google.gson.stream.MalformedJsonException: invalid number or unquoted string near 
+16:44:03 INFO  : Launching XSDB server: xsdb.bat C:/Xilinx/SDK/2015.3/scripts/xsdb/xsdb/xsdb-server.tcl
+16:44:06 INFO  : XSDB server has started successfully.
+16:44:06 INFO  : Processing command line option -hwspec C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/hdmi_wrapper.hdf.
+16:44:07 INFO  : Checking for hwspec changes in the project hdmi_wrapper_hw_platform_0.
+16:44:25 INFO  : Processor reset is completed for microblaze_0
+18:20:16 ERROR : Unexpected error while parsing XMD response ?: com.google.gson.JsonSyntaxException: com.google.gson.stream.MalformedJsonException: invalid number or unquoted string near 
+18:21:45 INFO  : Launching XSDB server: xsdb.bat C:/Xilinx/SDK/2015.3/scripts/xsdb/xsdb/xsdb-server.tcl
+18:21:48 INFO  : XSDB server has started successfully.
+18:21:49 INFO  : Processing command line option -hwspec C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/hdmi_wrapper.hdf.
+18:21:49 INFO  : Checking for hwspec changes in the project hdmi_wrapper_hw_platform_0.
+18:22:49 INFO  : Processor reset is completed for microblaze_0
+18:22:57 INFO  : Processor reset is completed for microblaze_0
+18:25:11 INFO  : Processor reset is completed for microblaze_0
+18:26:54 INFO  : Processor reset is completed for microblaze_0
+18:29:08 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+18:29:11 INFO  : Processor reset is completed for microblaze_0
+18:34:17 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+18:34:20 INFO  : Processor reset is completed for microblaze_0
+18:35:28 INFO  : Processor reset is completed for microblaze_0
+18:36:56 INFO  : Processor reset is completed for microblaze_0
+18:37:55 ERROR : Unexpected error while parsing XMD response ?: com.google.gson.JsonSyntaxException: com.google.gson.stream.MalformedJsonException: invalid number or unquoted string near 
+19:09:07 INFO  : Launching XSDB server: xsdb.bat C:/Xilinx/SDK/2015.3/scripts/xsdb/xsdb/xsdb-server.tcl
+19:09:10 INFO  : XSDB server has started successfully.
+19:09:11 INFO  : Processing command line option -hwspec C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/hdmi_wrapper.hdf.
+19:09:11 INFO  : Checking for hwspec changes in the project hdmi_wrapper_hw_platform_0.
+19:10:46 INFO  : Processor reset is completed for microblaze_0
+19:11:48 INFO  : FPGA Cable Disconnected. All active launches will be terminated.
+19:11:48 WARN  : Terminating existing sessions on processor microblaze_0
+19:12:10 INFO  : Processor reset is completed for microblaze_0
+19:12:53 INFO  : Processor reset is completed for microblaze_0
+19:15:26 INFO  : Processor reset is completed for microblaze_0
+19:26:46 INFO  : Processor reset is completed for microblaze_0
+19:28:39 INFO  : Processor reset is completed for microblaze_0
+19:31:20 INFO  : Processor reset is completed for microblaze_0
+19:39:57 INFO  : Processor reset is completed for microblaze_0
+19:41:55 INFO  : Processor reset is completed for microblaze_0
+19:56:43 INFO  : Processor reset is completed for microblaze_0
+20:07:13 INFO  : Processor reset is completed for microblaze_0
+20:13:16 ERROR : Unexpected error while parsing XMD response ?: com.google.gson.JsonSyntaxException: com.google.gson.stream.MalformedJsonException: invalid number or unquoted string near 
+20:14:10 INFO  : Launching XSDB server: xsdb.bat C:/Xilinx/SDK/2015.3/scripts/xsdb/xsdb/xsdb-server.tcl
+20:14:14 INFO  : XSDB server has started successfully.
+20:14:15 INFO  : Processing command line option -hwspec C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/hdmi_wrapper.hdf.
+20:14:15 INFO  : Checking for hwspec changes in the project hdmi_wrapper_hw_platform_0.
+20:16:59 INFO  : Processor reset is completed for microblaze_0
+20:19:51 INFO  : FPGA Cable Disconnected. All active launches will be terminated.
+20:23:42 INFO  : Processor reset is completed for microblaze_0
+20:27:30 INFO  : Processor reset is completed for microblaze_0
+20:30:47 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+20:30:53 ERROR : Unexpected error while launching program.
+java.lang.RuntimeException: Unable to Stop Processor
+MicroBlaze Pipeline Stalled on a Blocking Instruction or Invalid Bus Access
+    Stalled PC: 0x800031f4
+    Try Resetting the Processor to Continue..Processor is stalled at address 0x80000004. UNABLE to STOP MicroBlaze
+
+	at com.xilinx.sdk.targetmanager.internal.TM.stop(TM.java:773)
+	at com.xilinx.sdk.targetmanager.internal.CPURunSession.terminate(CPURunSession.java:27)
+	at com.xilinx.sdk.targetmanager.internal.TM.terminateCurrentLaunch(TM.java:821)
+	at com.xilinx.sdk.debug.core.XilinxAppLaunchConfigurationDelegate.runApplication(XilinxAppLaunchConfigurationDelegate.java:568)
+	at com.xilinx.sdk.debug.core.XilinxAppLaunchConfigurationDelegate.launch(XilinxAppLaunchConfigurationDelegate.java:296)
+	at com.xilinx.sdk.debug.ui.XilinxAppLaunchDelegateWrapper.launch(XilinxAppLaunchDelegateWrapper.java:31)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:858)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:707)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin.buildAndLaunch(DebugUIPlugin.java:1018)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin$8.run(DebugUIPlugin.java:1222)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:53)
+20:35:06 ERROR : Unexpected error while parsing XMD response ?: com.google.gson.JsonSyntaxException: com.google.gson.stream.MalformedJsonException: invalid number or unquoted string near 
+20:35:26 INFO  : Launching XSDB server: xsdb.bat C:/Xilinx/SDK/2015.3/scripts/xsdb/xsdb/xsdb-server.tcl
+20:35:29 INFO  : XSDB server has started successfully.
+20:35:29 INFO  : Processing command line option -hwspec C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/hdmi_wrapper.hdf.
+20:35:29 INFO  : Checking for hwspec changes in the project hdmi_wrapper_hw_platform_0.
+20:35:47 INFO  : Processor reset is completed for microblaze_0
+21:16:35 INFO  : Processor reset is completed for microblaze_0
+21:26:28 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+21:26:44 INFO  : Processor reset is completed for microblaze_0
+21:31:51 INFO  : Processor reset is completed for microblaze_0
+21:49:56 INFO  : Processor reset is completed for microblaze_0
+21:52:31 INFO  : Processor reset is completed for microblaze_0
+21:52:57 INFO  : Processor reset is completed for microblaze_0
+21:54:16 ERROR : Unexpected error while parsing XMD response ?: com.google.gson.JsonSyntaxException: com.google.gson.stream.MalformedJsonException: invalid number or unquoted string near 
+21:55:35 INFO  : Launching XSDB server: xsdb.bat C:/Xilinx/SDK/2015.3/scripts/xsdb/xsdb/xsdb-server.tcl
+21:55:40 INFO  : XSDB server has started successfully.
+21:55:40 INFO  : Processing command line option -hwspec C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/hdmi_wrapper.hdf.
+21:55:41 INFO  : Checking for hwspec changes in the project hdmi_wrapper_hw_platform_0.
+21:56:00 INFO  : Processor reset is completed for microblaze_0
+21:58:17 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+21:58:21 INFO  : Processor reset is completed for microblaze_0
+21:58:24 INFO  : FPGA Cable Disconnected. All active launches will be terminated.
+21:58:24 WARN  : Terminating existing sessions on processor microblaze_0
+21:59:28 INFO  : Processor reset is completed for microblaze_0
+22:05:19 ERROR : Checking FPGA configuration failed..Connection to Board Failed
+
+
+    Failed to open Cable Node jsn-Nexys Video-210276723574B on TCP:127.0.0.1:3121
+
+
+22:05:19 ERROR : Unexpected error while launching program.
+com.xilinx.sdk.targetmanager.TMException: Connection to Board Failed
+
+
+    Failed to open Cable Node jsn-Nexys Video-210276723574B on TCP:127.0.0.1:3121
+
+
+	at com.xilinx.sdk.targetmanager.internal.TM.isFPGAConfigured(TM.java:374)
+	at com.xilinx.sdk.debug.core.XilinxAppLaunchConfigurationDelegate.isFpgaConfigured(XilinxAppLaunchConfigurationDelegate.java:381)
+	at com.xilinx.sdk.debug.core.XilinxAppLaunchConfigurationDelegate.launch(XilinxAppLaunchConfigurationDelegate.java:290)
+	at com.xilinx.sdk.debug.ui.XilinxAppLaunchDelegateWrapper.launch(XilinxAppLaunchDelegateWrapper.java:31)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:858)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:707)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin.buildAndLaunch(DebugUIPlugin.java:1018)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin$8.run(DebugUIPlugin.java:1222)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:53)
+22:08:42 ERROR : Unexpected error while parsing XMD response ?: com.google.gson.JsonSyntaxException: com.google.gson.stream.MalformedJsonException: invalid number or unquoted string near 
+22:09:14 INFO  : Launching XSDB server: xsdb.bat C:/Xilinx/SDK/2015.3/scripts/xsdb/xsdb/xsdb-server.tcl
+22:09:17 INFO  : XSDB server has started successfully.
+22:09:17 INFO  : Processing command line option -hwspec C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/hdmi_wrapper.hdf.
+22:09:18 INFO  : Checking for hwspec changes in the project hdmi_wrapper_hw_platform_0.
+22:09:28 INFO  : Processor reset is completed for microblaze_0
+22:12:19 INFO  : Processor reset is completed for microblaze_0
+22:24:18 INFO  : Processor reset is completed for microblaze_0
+22:36:38 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+22:36:40 INFO  : Processor reset is completed for microblaze_0
+22:38:16 INFO  : Processor reset is completed for microblaze_0
+22:42:10 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+22:42:12 INFO  : Processor reset is completed for microblaze_0
+22:45:25 INFO  : Processor reset is completed for microblaze_0
+22:55:40 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+22:55:48 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+22:55:51 INFO  : Processor reset is completed for microblaze_0
+22:55:54 INFO  : FPGA Cable Disconnected. All active launches will be terminated.
+22:55:54 WARN  : Terminating existing sessions on processor microblaze_0
+22:57:28 INFO  : Processor reset is completed for microblaze_0
+22:58:50 INFO  : Processor reset is completed for microblaze_0
+23:01:02 INFO  : Processor reset is completed for microblaze_0
+23:04:15 INFO  : Processor reset is completed for microblaze_0
+23:10:09 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+23:10:14 INFO  : Processor reset is completed for microblaze_0
+23:10:20 INFO  : FPGA Cable Disconnected. All active launches will be terminated.
+23:10:58 INFO  : Processor reset is completed for microblaze_0
+23:12:58 INFO  : Processor reset is completed for microblaze_0
+23:13:54 INFO  : Processor reset is completed for microblaze_0
+23:14:52 INFO  : Processor reset is completed for microblaze_0
+23:15:28 INFO  : Time out for XMD transaction is 60000
+If you want to increase the timeout value, goto Windows-> Preferences -> Xilinx SDK -> XMD Startup
+23:15:28 ERROR : Timeout occured while waiting to get reply for command "xstop 0"
+23:16:51 INFO  : Processor reset is completed for microblaze_0
+23:20:42 INFO  : Processor reset is completed for microblaze_0
+23:31:35 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+23:32:17 INFO  : Processor reset is completed for microblaze_0
+23:33:04 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+23:33:07 INFO  : Processor reset is completed for microblaze_0
+23:34:46 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+23:34:49 INFO  : Processor reset is completed for microblaze_0
+23:34:51 INFO  : FPGA Cable Disconnected. All active launches will be terminated.
+23:34:51 WARN  : Terminating existing sessions on processor microblaze_0
+23:35:48 INFO  : Processor reset is completed for microblaze_0
+23:45:37 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+23:47:00 INFO  : Processor reset is completed for microblaze_0
+23:51:27 INFO  : Processor reset is completed for microblaze_0
+23:53:14 INFO  : Processor reset is completed for microblaze_0
+23:53:30 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+23:53:34 INFO  : Processor reset is completed for microblaze_0
+23:54:27 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+23:54:29 INFO  : Processor reset is completed for microblaze_0
+23:54:44 ERROR : Unexpected error while launching program.
+java.lang.RuntimeException: Error stopping at main.
+	at com.xilinx.sdk.debug.core.XilinxAppLaunchConfigurationDelegate.debugApplication(XilinxAppLaunchConfigurationDelegate.java:778)
+	at com.xilinx.sdk.debug.core.XilinxAppLaunchConfigurationDelegate.launch(XilinxAppLaunchConfigurationDelegate.java:298)
+	at com.xilinx.sdk.debug.ui.XilinxAppLaunchDelegateWrapper.launch(XilinxAppLaunchDelegateWrapper.java:31)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:858)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:707)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin.buildAndLaunch(DebugUIPlugin.java:1018)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin$8.run(DebugUIPlugin.java:1222)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:53)
+23:55:18 ERROR : Unexpected error while parsing XMD response ?: com.google.gson.JsonSyntaxException: com.google.gson.stream.MalformedJsonException: invalid number or unquoted string near 
+23:55:48 INFO  : Launching XSDB server: xsdb.bat C:/Xilinx/SDK/2015.3/scripts/xsdb/xsdb/xsdb-server.tcl
+23:55:52 INFO  : XSDB server has started successfully.
+23:55:53 INFO  : Processing command line option -hwspec C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/hdmi_wrapper.hdf.
+23:55:53 INFO  : Checking for hwspec changes in the project hdmi_wrapper_hw_platform_0.
+23:56:04 INFO  : Processor reset is completed for microblaze_0
+23:59:16 INFO  : Processor reset is completed for microblaze_0
+23:59:34 ERROR : Unexpected error while launching program.
+java.lang.RuntimeException: Error stopping at main.
+	at com.xilinx.sdk.debug.core.XilinxAppLaunchConfigurationDelegate.debugApplication(XilinxAppLaunchConfigurationDelegate.java:778)
+	at com.xilinx.sdk.debug.core.XilinxAppLaunchConfigurationDelegate.launch(XilinxAppLaunchConfigurationDelegate.java:298)
+	at com.xilinx.sdk.debug.ui.XilinxAppLaunchDelegateWrapper.launch(XilinxAppLaunchDelegateWrapper.java:31)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:858)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:707)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin.buildAndLaunch(DebugUIPlugin.java:1018)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin$8.run(DebugUIPlugin.java:1222)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:53)
+00:00:22 INFO  : Processor reset is completed for microblaze_0
+00:03:02 INFO  : Processor reset is completed for microblaze_0
+00:04:11 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+00:04:14 INFO  : Processor reset is completed for microblaze_0
+00:08:15 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+00:08:17 INFO  : Processor reset is completed for microblaze_0
+00:08:34 INFO  : FPGA Cable Disconnected. All active launches will be terminated.
+00:08:34 WARN  : Terminating existing sessions on processor microblaze_0
+00:10:53 ERROR : Unexpected error while parsing XMD response ?: com.google.gson.JsonSyntaxException: com.google.gson.stream.MalformedJsonException: invalid number or unquoted string near 
+19:52:13 INFO  : Launching XSDB server: xsdb.bat C:/Xilinx/SDK/2015.3/scripts/xsdb/xsdb/xsdb-server.tcl
+19:52:19 INFO  : XSDB server has started successfully.
+19:52:28 INFO  : Processing command line option -hwspec C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/hdmi_wrapper.hdf.
+19:52:28 INFO  : Checking for hwspec changes in the project hdmi_wrapper_hw_platform_0.
+19:55:07 INFO  : Launching XSDB server: xsdb.bat C:/Xilinx/SDK/2015.3/scripts/xsdb/xsdb/xsdb-server.tcl
+19:55:10 INFO  : XSDB server has started successfully.
+19:55:11 INFO  : Processing command line option -hwspec C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/hdmi_wrapper.hdf.
+19:55:11 INFO  : Checking for hwspec changes in the project hdmi_wrapper_hw_platform_0.
+20:10:40 INFO  : Processor reset is completed for microblaze_0
+21:16:00 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+21:16:02 INFO  : Processor reset is completed for microblaze_0
+21:20:42 INFO  : Processor reset is completed for microblaze_0
+21:24:40 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+21:24:44 INFO  : Processor reset is completed for microblaze_0
+21:24:48 INFO  : FPGA Cable Disconnected. All active launches will be terminated.
+21:24:48 WARN  : Terminating existing sessions on processor microblaze_0
+21:25:37 INFO  : Processor reset is completed for microblaze_0
+21:26:44 INFO  : Processor reset is completed for microblaze_0
+21:29:49 INFO  : Processor reset is completed for microblaze_0
+21:38:07 INFO  : Processor reset is completed for microblaze_0
+21:45:02 INFO  : Processor reset is completed for microblaze_0
+21:46:56 INFO  : Processor reset is completed for microblaze_0
+21:47:20 INFO  : Processor reset is completed for microblaze_0
+22:00:01 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+22:00:04 INFO  : Processor reset is completed for microblaze_0
+22:02:44 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+22:02:46 INFO  : Processor reset is completed for microblaze_0
+22:06:39 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+22:06:41 INFO  : Processor reset is completed for microblaze_0
+22:11:30 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+22:11:33 INFO  : Processor reset is completed for microblaze_0
+22:11:36 INFO  : FPGA Cable Disconnected. All active launches will be terminated.
+22:11:36 WARN  : Terminating existing sessions on processor microblaze_0
+22:14:47 INFO  : Processor reset is completed for microblaze_0
+22:15:14 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+22:15:15 INFO  : Processor reset is completed for microblaze_0
+22:19:40 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+22:19:43 INFO  : Processor reset is completed for microblaze_0
+22:21:21 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+22:21:23 INFO  : Processor reset is completed for microblaze_0
+22:24:13 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+22:24:14 INFO  : Processor reset is completed for microblaze_0
+22:27:31 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+22:27:32 INFO  : Processor reset is completed for microblaze_0
+22:28:46 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+22:28:48 INFO  : Processor reset is completed for microblaze_0
+22:36:52 INFO  : Processor reset is completed for microblaze_0
+22:39:47 INFO  : Processor reset is completed for microblaze_0
+22:43:38 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+22:43:39 INFO  : Processor reset is completed for microblaze_0
+22:46:00 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+22:46:01 INFO  : Processor reset is completed for microblaze_0
+22:51:14 INFO  : Processor reset is completed for microblaze_0
+22:56:19 INFO  : Processor reset is completed for microblaze_0
+22:58:30 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+22:58:31 INFO  : Processor reset is completed for microblaze_0
+23:01:01 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+23:01:02 INFO  : Processor reset is completed for microblaze_0
+23:03:19 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+23:03:20 INFO  : Processor reset is completed for microblaze_0
+23:17:12 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+23:17:14 INFO  : Processor reset is completed for microblaze_0
+23:20:32 INFO  : Processor reset is completed for microblaze_0
+23:23:13 INFO  : Processor reset is completed for microblaze_0
+23:23:46 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+23:23:48 INFO  : Processor reset is completed for microblaze_0
+23:27:59 INFO  : Processor reset is completed for microblaze_0
+23:29:52 INFO  : Processor reset is completed for microblaze_0
+23:40:16 INFO  : Processor reset is completed for microblaze_0
+23:45:32 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+23:45:34 INFO  : Processor reset is completed for microblaze_0
+23:48:52 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+23:48:53 INFO  : Processor reset is completed for microblaze_0
+23:52:06 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+23:52:22 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+23:52:24 INFO  : Processor reset is completed for microblaze_0
+23:57:37 INFO  : Processor reset is completed for microblaze_0
+00:02:17 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+00:02:18 INFO  : Processor reset is completed for microblaze_0
+00:04:59 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+00:05:05 INFO  : Processor reset is completed for microblaze_0
+00:07:20 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+00:07:21 INFO  : Processor reset is completed for microblaze_0
+00:10:19 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+00:10:21 INFO  : Processor reset is completed for microblaze_0
+00:14:39 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+00:14:41 INFO  : Processor reset is completed for microblaze_0
+00:32:07 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+00:32:08 INFO  : Processor reset is completed for microblaze_0
+00:34:05 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+00:34:09 INFO  : Processor reset is completed for microblaze_0
+00:40:14 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+00:40:42 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+00:40:44 INFO  : Processor reset is completed for microblaze_0
+00:44:10 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+00:44:12 INFO  : Processor reset is completed for microblaze_0
+00:49:01 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+00:49:02 INFO  : Processor reset is completed for microblaze_0
+00:51:11 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+00:51:13 INFO  : Processor reset is completed for microblaze_0
+00:53:14 INFO  : Processor reset is completed for microblaze_0
+00:54:59 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+00:55:03 INFO  : Processor reset is completed for microblaze_0
+00:58:02 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+00:58:04 INFO  : Processor reset is completed for microblaze_0
+01:05:46 ERROR : Unexpected error while parsing XMD response ?: com.google.gson.JsonSyntaxException: com.google.gson.stream.MalformedJsonException: invalid number or unquoted string near 
+14:32:38 INFO  : Launching XSDB server: xsdb.bat C:/Xilinx/SDK/2015.3/scripts/xsdb/xsdb/xsdb-server.tcl
+14:32:45 INFO  : XSDB server has started successfully.
+14:32:46 INFO  : Processing command line option -hwspec C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/hdmi_wrapper.hdf.
+14:32:46 INFO  : Checking for hwspec changes in the project hdmi_wrapper_hw_platform_0.
+15:07:03 INFO  : Launching XSDB server: xsdb.bat C:/Xilinx/SDK/2015.3/scripts/xsdb/xsdb/xsdb-server.tcl
+15:07:12 INFO  : XSDB server has started successfully.
+15:07:13 INFO  : Processing command line option -hwspec C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/hdmi_wrapper.hdf.
+15:07:13 INFO  : Checking for hwspec changes in the project hdmi_wrapper_hw_platform_0.
+15:10:18 INFO  : Processor reset is completed for microblaze_0
+15:13:00 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+15:13:02 INFO  : Processor reset is completed for microblaze_0
+15:25:08 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+15:25:10 INFO  : Processor reset is completed for microblaze_0
+15:25:58 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+15:25:59 INFO  : Processor reset is completed for microblaze_0
+15:27:59 INFO  : Processor reset is completed for microblaze_0
+15:31:40 INFO  : Processor reset is completed for microblaze_0
+15:55:08 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+15:55:11 INFO  : Processor reset is completed for microblaze_0
+16:02:16 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+16:02:17 INFO  : Processor reset is completed for microblaze_0
+16:05:53 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+16:05:54 INFO  : Processor reset is completed for microblaze_0
+16:14:00 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+16:14:01 INFO  : Processor reset is completed for microblaze_0
+16:57:24 INFO  : Processor reset is completed for microblaze_0
+17:07:34 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+17:07:36 INFO  : Processor reset is completed for microblaze_0
+17:09:47 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+17:09:48 INFO  : Processor reset is completed for microblaze_0
+17:23:56 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+17:23:57 INFO  : Processor reset is completed for microblaze_0
+17:33:17 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+17:33:18 INFO  : Processor reset is completed for microblaze_0
+17:46:29 INFO  : Processor reset is completed for microblaze_0
+17:49:37 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+17:49:39 INFO  : Processor reset is completed for microblaze_0
+17:58:55 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+17:58:56 INFO  : Processor reset is completed for microblaze_0
+18:03:52 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+18:03:54 INFO  : Processor reset is completed for microblaze_0
+18:04:32 INFO  : Processor reset is completed for microblaze_0
+18:14:42 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+18:14:44 INFO  : Processor reset is completed for microblaze_0
+18:22:37 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+18:22:39 INFO  : Processor reset is completed for microblaze_0
+18:30:26 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+18:30:27 INFO  : Processor reset is completed for microblaze_0
+18:35:40 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+18:35:42 INFO  : Processor reset is completed for microblaze_0
+18:41:45 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+18:41:46 INFO  : Processor reset is completed for microblaze_0
+18:45:50 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+18:45:53 INFO  : Processor reset is completed for microblaze_0
+18:53:29 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+18:53:31 INFO  : Processor reset is completed for microblaze_0
+18:57:41 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+18:57:42 INFO  : Processor reset is completed for microblaze_0
+19:08:38 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+19:08:41 INFO  : Processor reset is completed for microblaze_0
+19:08:43 INFO  : FPGA Cable Disconnected. All active launches will be terminated.
+19:08:43 WARN  : Terminating existing sessions on processor microblaze_0
+19:09:44 INFO  : Processor reset is completed for microblaze_0
+19:24:51 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+19:24:53 INFO  : Processor reset is completed for microblaze_0
+19:26:45 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+19:26:47 INFO  : Processor reset is completed for microblaze_0
+19:48:07 INFO  : Processor reset is completed for microblaze_0
+20:04:38 ERROR : Checking FPGA configuration failed..Connection to Board Failed
+
+
+    Failed to open Cable Node jsn-Nexys Video-210276723574B on TCP:127.0.0.1:3121
+
+
+20:04:38 ERROR : Unexpected error while launching program.
+com.xilinx.sdk.targetmanager.TMException: Connection to Board Failed
+
+
+    Failed to open Cable Node jsn-Nexys Video-210276723574B on TCP:127.0.0.1:3121
+
+
+	at com.xilinx.sdk.targetmanager.internal.TM.isFPGAConfigured(TM.java:374)
+	at com.xilinx.sdk.debug.core.XilinxAppLaunchConfigurationDelegate.isFpgaConfigured(XilinxAppLaunchConfigurationDelegate.java:381)
+	at com.xilinx.sdk.debug.core.XilinxAppLaunchConfigurationDelegate.launch(XilinxAppLaunchConfigurationDelegate.java:290)
+	at com.xilinx.sdk.debug.ui.XilinxAppLaunchDelegateWrapper.launch(XilinxAppLaunchDelegateWrapper.java:31)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:858)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:707)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin.buildAndLaunch(DebugUIPlugin.java:1018)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin$8.run(DebugUIPlugin.java:1222)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:53)
+20:09:28 ERROR : Unexpected error while parsing XMD response ?: com.google.gson.JsonSyntaxException: com.google.gson.stream.MalformedJsonException: invalid number or unquoted string near 
+20:09:58 INFO  : Launching XSDB server: xsdb.bat C:/Xilinx/SDK/2015.3/scripts/xsdb/xsdb/xsdb-server.tcl
+20:10:05 INFO  : XSDB server has started successfully.
+20:10:06 INFO  : Processing command line option -hwspec C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/hdmi_wrapper.hdf.
+20:10:06 INFO  : Checking for hwspec changes in the project hdmi_wrapper_hw_platform_0.
+20:10:31 INFO  : Processor reset is completed for microblaze_0
+21:35:50 INFO  : Processor reset is completed for microblaze_0
+21:40:42 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+21:40:45 INFO  : Processor reset is completed for microblaze_0
+21:57:12 ERROR : Checking FPGA configuration failed..Connection to Board Failed
+
+
+    Failed to open Cable Node jsn-Nexys Video-210276723574B on TCP:127.0.0.1:3121
+
+
+21:57:12 ERROR : Unexpected error while launching program.
+com.xilinx.sdk.targetmanager.TMException: Connection to Board Failed
+
+
+    Failed to open Cable Node jsn-Nexys Video-210276723574B on TCP:127.0.0.1:3121
+
+
+	at com.xilinx.sdk.targetmanager.internal.TM.isFPGAConfigured(TM.java:374)
+	at com.xilinx.sdk.debug.core.XilinxAppLaunchConfigurationDelegate.isFpgaConfigured(XilinxAppLaunchConfigurationDelegate.java:381)
+	at com.xilinx.sdk.debug.core.XilinxAppLaunchConfigurationDelegate.launch(XilinxAppLaunchConfigurationDelegate.java:290)
+	at com.xilinx.sdk.debug.ui.XilinxAppLaunchDelegateWrapper.launch(XilinxAppLaunchDelegateWrapper.java:31)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:858)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:707)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin.buildAndLaunch(DebugUIPlugin.java:1018)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin$8.run(DebugUIPlugin.java:1222)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:53)
+21:58:28 INFO  : Processor reset is completed for microblaze_0
+22:02:42 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+22:02:44 INFO  : Processor reset is completed for microblaze_0
+23:05:00 INFO  : Processor reset is completed for microblaze_0
+23:06:05 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+23:06:07 INFO  : Processor reset is completed for microblaze_0
+23:15:54 INFO  : Processor reset is completed for microblaze_0
+23:19:59 INFO  : Processor reset is completed for microblaze_0
+23:22:34 INFO  : Processor reset is completed for microblaze_0
+23:25:34 INFO  : Processor reset is completed for microblaze_0
+23:26:38 ERROR : Unexpected error while parsing XMD response ?: com.google.gson.JsonSyntaxException: com.google.gson.stream.MalformedJsonException: invalid number or unquoted string near 
+23:27:16 INFO  : Launching XSDB server: xsdb.bat C:/Xilinx/SDK/2015.3/scripts/xsdb/xsdb/xsdb-server.tcl
+23:27:23 INFO  : XSDB server has started successfully.
+23:27:24 INFO  : Processing command line option -hwspec C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/hdmi_wrapper.hdf.
+23:27:26 INFO  : Checking for hwspec changes in the project hdmi_wrapper_hw_platform_0.
+23:27:30 INFO  : Processor reset is completed for microblaze_0
+23:30:25 INFO  : Processor reset is completed for microblaze_0
+23:41:33 INFO  : Processor reset is completed for microblaze_0
+23:44:36 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+23:44:38 INFO  : Processor reset is completed for microblaze_0
+23:49:25 INFO  : Processor reset is completed for microblaze_0
+23:51:48 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+23:51:49 INFO  : Processor reset is completed for microblaze_0
+23:53:24 ERROR : Unexpected error while parsing XMD response ?: com.google.gson.JsonSyntaxException: com.google.gson.stream.MalformedJsonException: invalid number or unquoted string near 
+00:09:58 INFO  : Launching XSDB server: xsdb.bat C:/Xilinx/SDK/2015.3/scripts/xsdb/xsdb/xsdb-server.tcl
+00:10:03 INFO  : XSDB server has started successfully.
+00:10:04 INFO  : Processing command line option -hwspec C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/hdmi_wrapper.hdf.
+00:10:04 INFO  : Checking for hwspec changes in the project hdmi_wrapper_hw_platform_0.
+00:10:23 INFO  : Processor reset is completed for microblaze_0
+00:11:14 ERROR : Unexpected error while parsing XMD response ?: com.google.gson.JsonSyntaxException: com.google.gson.stream.MalformedJsonException: invalid number or unquoted string near 
+01:45:13 INFO  : Launching XSDB server: xsdb.bat C:/Xilinx/SDK/2015.3/scripts/xsdb/xsdb/xsdb-server.tcl
+01:45:17 INFO  : XSDB server has started successfully.
+01:45:18 INFO  : Processing command line option -hwspec C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/hdmi_wrapper.hdf.
+01:45:18 INFO  : Checking for hwspec changes in the project hdmi_wrapper_hw_platform_0.
+01:46:20 INFO  : Processor reset is completed for microblaze_0
+01:55:06 INFO  : Processor reset is completed for microblaze_0
+01:56:37 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+01:56:39 INFO  : Processor reset is completed for microblaze_0
+01:57:12 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+01:57:14 INFO  : Processor reset is completed for microblaze_0
+01:57:52 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+01:57:54 INFO  : Processor reset is completed for microblaze_0
+02:00:39 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+02:00:41 INFO  : Processor reset is completed for microblaze_0
+02:04:02 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+02:04:03 INFO  : Processor reset is completed for microblaze_0
+02:06:04 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+02:06:06 INFO  : Processor reset is completed for microblaze_0
+02:29:32 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+02:29:33 INFO  : Processor reset is completed for microblaze_0
+02:33:09 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+02:33:10 INFO  : Processor reset is completed for microblaze_0
+02:35:27 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+02:35:29 INFO  : Processor reset is completed for microblaze_0
+02:36:47 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+02:36:49 INFO  : Processor reset is completed for microblaze_0
+02:39:33 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+02:39:36 INFO  : Processor reset is completed for microblaze_0
+02:59:35 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+02:59:37 INFO  : Processor reset is completed for microblaze_0
+03:01:05 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+03:01:07 INFO  : Processor reset is completed for microblaze_0
+07:51:26 INFO  : Processor reset is completed for microblaze_0
+08:02:27 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+08:02:29 INFO  : Processor reset is completed for microblaze_0
+08:04:30 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+08:04:32 INFO  : Processor reset is completed for microblaze_0
+08:06:38 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+08:06:39 INFO  : Processor reset is completed for microblaze_0
+08:07:35 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+08:07:37 INFO  : Processor reset is completed for microblaze_0
+08:08:15 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+08:08:17 INFO  : Processor reset is completed for microblaze_0
+08:09:05 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+08:09:07 INFO  : Processor reset is completed for microblaze_0
+08:21:44 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+08:21:45 INFO  : Processor reset is completed for microblaze_0
+08:23:07 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+08:23:08 INFO  : Processor reset is completed for microblaze_0
+08:33:54 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+08:33:56 INFO  : Processor reset is completed for microblaze_0
+08:35:03 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+08:35:04 INFO  : Processor reset is completed for microblaze_0
+08:36:19 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+08:36:20 INFO  : Processor reset is completed for microblaze_0
+08:39:05 INFO  : Processor reset is completed for microblaze_0
+08:46:40 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+08:46:42 INFO  : Processor reset is completed for microblaze_0
+08:57:12 ERROR : Unexpected error while parsing XMD response ?: com.google.gson.JsonSyntaxException: com.google.gson.stream.MalformedJsonException: invalid number or unquoted string near 
+13:08:15 INFO  : Launching XSDB server: xsdb.bat C:/Xilinx/SDK/2015.3/scripts/xsdb/xsdb/xsdb-server.tcl
+13:08:23 INFO  : XSDB server has started successfully.
+13:08:23 INFO  : Processing command line option -hwspec C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/hdmi_wrapper.hdf.
+13:08:24 INFO  : Checking for hwspec changes in the project hdmi_wrapper_hw_platform_0.
+13:08:25 INFO  : SDK has detected change in the last modified timestamps for source hardware specification file Source:1459703140417,  Project:1459275700328
+13:08:25 INFO  : The hardware specification for project 'hdmi_wrapper_hw_platform_0' is different from C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/hdmi_wrapper.hdf.
+13:08:26 INFO  : Copied contents of C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/hdmi_wrapper.hdf into \hdmi_wrapper_hw_platform_0\system.hdf.
+13:08:29 INFO  : Synchronizing projects in the workspace with the hardware platform specification changes.
+13:08:42 ERROR : (XSDB Server)ERROR: [Hsi 55-1433] Error boost::filesystem::directory_iterator::construct: Access is denied: "C:/Users/Fadime/AppData/Local/Temp\9E2D00F8-BAB0-7891-BAD9-6EB056F1CF9E"
+
+13:08:43 ERROR : (XSDB Server)ERROR: [Hsi 55-1433] Error boost::filesystem::directory_iterator::construct: Access is denied: "C:/Users/Fadime/AppData/Local/Temp\ibtmp7c69303"
+
+13:08:43 ERROR : (XSDB Server)ERROR: [Hsi 55-1433] Error boost::filesystem::directory_iterator::construct: Access is denied: "C:/Users/Fadime/AppData/Local/Temp\ibtmp92fd302"
+
+13:08:43 ERROR : (XSDB Server)ERROR: [Hsi 55-1433] Error boost::filesystem::directory_iterator::construct: Access is denied: "C:/Users/Fadime/AppData/Local/Temp\ibtmp94d3285"
+
+13:08:43 ERROR : (XSDB Server)ERROR: [Hsi 55-1433] Error boost::filesystem::directory_iterator::construct: Access is denied: "C:/Users/Fadime/AppData/Local/Temp\ibtmpa27e462"
+
+13:08:43 ERROR : (XSDB Server)ERROR: [Hsi 55-1433] Error boost::filesystem::directory_iterator::construct: Access is denied: "C:/Users/Fadime/AppData/Local/Temp\ibtmpc2f8301"
+
+13:08:43 ERROR : (XSDB Server)ERROR: [Hsi 55-1433] Error boost::filesystem::directory_iterator::construct: Access is denied: "C:/Users/Fadime/AppData/Local/Temp\ibtmpdd36304"
+
+13:08:43 ERROR : (XSDB Server)ERROR: [Hsi 55-1433] Error boost::filesystem::directory_iterator::construct: Access is denied: "C:/Users/Fadime/AppData/Local/Temp\is1373634743"
+
+13:08:43 ERROR : (XSDB Server)ERROR: [Hsi 55-1433] Error boost::filesystem::directory_iterator::construct: Access is denied: "C:/Users/Fadime/AppData/Local/Temp\is1668783924"
+
+13:08:43 ERROR : (XSDB Server)ERROR: [Hsi 55-1433] Error boost::filesystem::directory_iterator::construct: Access is denied: "C:/Users/Fadime/AppData/Local/Temp\is256538528"
+
+13:08:45 ERROR : Failed to call sync_sw_with_hw_change
+Reason: ERROR: [Common 17-39] 'hsi::open_sw_design' failed due to earlier errors.
+
+13:08:45 ERROR : Error updating BSP project MSS files.
+13:08:47 INFO  : Updating hardware inferred compiler options for videodemo.
+13:08:47 INFO  : Clearing existing target manager status.
+13:15:04 INFO  : Processor reset is completed for microblaze_0
+13:18:32 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+13:18:34 INFO  : Processor reset is completed for microblaze_0
+13:32:37 ERROR : Unexpected error while parsing XMD response ?: com.google.gson.JsonSyntaxException: com.google.gson.stream.MalformedJsonException: invalid number or unquoted string near 
+13:46:59 INFO  : Launching XSDB server: xsdb.bat C:/Xilinx/SDK/2015.3/scripts/xsdb/xsdb/xsdb-server.tcl
+13:47:02 INFO  : XSDB server has started successfully.
+13:47:03 INFO  : Processing command line option -hwspec C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/hdmi_wrapper.hdf.
+13:47:03 INFO  : Checking for hwspec changes in the project hdmi_wrapper_hw_platform_0.
+13:53:05 INFO  : Processor reset is completed for microblaze_0
+13:54:58 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+13:55:01 INFO  : Processor reset is completed for microblaze_0
+13:58:37 ERROR : Unexpected error while parsing XMD response ?: com.google.gson.JsonSyntaxException: com.google.gson.stream.MalformedJsonException: invalid number or unquoted string near 
+13:59:57 INFO  : Launching XSDB server: xsdb.bat C:/Xilinx/SDK/2015.3/scripts/xsdb/xsdb/xsdb-server.tcl
+13:59:59 INFO  : XSDB server has started successfully.
+13:59:59 INFO  : Processing command line option -hwspec C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/hdmi_wrapper.hdf.
+13:59:59 INFO  : Checking for hwspec changes in the project hdmi_wrapper_hw_platform_0.
+14:03:06 INFO  : Processor reset is completed for microblaze_0
+14:04:56 ERROR : Unexpected error while parsing XMD response ?: com.google.gson.JsonSyntaxException: com.google.gson.stream.MalformedJsonException: invalid number or unquoted string near 
+14:05:13 INFO  : Launching XSDB server: xsdb.bat C:/Xilinx/SDK/2015.3/scripts/xsdb/xsdb/xsdb-server.tcl
+14:05:15 INFO  : XSDB server has started successfully.
+14:05:15 INFO  : Processing command line option -hwspec C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/hdmi_wrapper.hdf.
+14:05:15 INFO  : Checking for hwspec changes in the project hdmi_wrapper_hw_platform_0.
+14:06:19 INFO  : Processor reset is completed for microblaze_0
+14:12:18 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+14:12:22 INFO  : Processor reset is completed for microblaze_0
+14:14:34 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+14:14:37 INFO  : Processor reset is completed for microblaze_0
+14:17:58 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+14:18:00 INFO  : Processor reset is completed for microblaze_0
+14:20:09 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+14:20:13 INFO  : Processor reset is completed for microblaze_0
+14:46:40 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+15:12:12 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+15:12:14 INFO  : Processor reset is completed for microblaze_0
+15:15:34 INFO  : Processor reset is completed for microblaze_0
+15:19:35 INFO  : Processor reset is completed for microblaze_0
+15:27:29 INFO  : Processor reset is completed for microblaze_0
+15:33:47 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+15:33:48 INFO  : Processor reset is completed for microblaze_0
+15:36:35 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+15:36:36 INFO  : Processor reset is completed for microblaze_0
+15:44:04 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+15:44:07 INFO  : Processor reset is completed for microblaze_0
+17:18:39 INFO  : Processor reset is completed for microblaze_0
+17:23:11 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+17:23:16 INFO  : Processor reset is completed for microblaze_0
+17:28:40 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+17:28:43 INFO  : Processor reset is completed for microblaze_0
+17:33:15 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+17:33:28 INFO  : Processor reset is completed for microblaze_0
+17:42:48 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+17:42:50 INFO  : Processor reset is completed for microblaze_0
+17:52:47 INFO  : Processor reset is completed for microblaze_0
+17:54:06 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+17:54:08 INFO  : Processor reset is completed for microblaze_0
+18:01:49 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+18:01:51 INFO  : Processor reset is completed for microblaze_0
+18:02:26 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+18:03:31 INFO  : Processor reset is completed for microblaze_0
+18:09:05 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+18:09:22 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+18:09:24 INFO  : Processor reset is completed for microblaze_0
+18:14:24 INFO  : Processor reset is completed for microblaze_0
+18:19:40 INFO  : Processor reset is completed for microblaze_0
+18:22:45 INFO  : Processor reset is completed for microblaze_0
+18:27:58 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+18:28:00 INFO  : Processor reset is completed for microblaze_0
+18:29:28 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+18:29:29 INFO  : Processor reset is completed for microblaze_0
+18:41:02 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+18:41:05 INFO  : Processor reset is completed for microblaze_0
+18:42:21 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+18:42:23 INFO  : Processor reset is completed for microblaze_0
+18:46:07 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+18:46:09 INFO  : Processor reset is completed for microblaze_0
+18:47:05 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+18:47:07 INFO  : Processor reset is completed for microblaze_0
+18:49:26 INFO  : Processor reset is completed for microblaze_0
+19:28:53 INFO  : Processor reset is completed for microblaze_0
+19:34:24 INFO  : Processor reset is completed for microblaze_0
+19:37:06 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+19:38:26 INFO  : Processor reset is completed for microblaze_0
+19:41:30 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+19:41:31 INFO  : Processor reset is completed for microblaze_0
+19:48:23 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+19:48:25 INFO  : Processor reset is completed for microblaze_0
+19:49:29 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+19:49:31 INFO  : Processor reset is completed for microblaze_0
+19:58:23 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+19:58:25 INFO  : Processor reset is completed for microblaze_0
+19:59:42 ERROR : Unexpected error while parsing XMD response ?: com.google.gson.JsonSyntaxException: com.google.gson.stream.MalformedJsonException: invalid number or unquoted string near 
+20:02:03 INFO  : Launching XSDB server: xsdb.bat C:/Xilinx/SDK/2015.3/scripts/xsdb/xsdb/xsdb-server.tcl
+20:02:09 INFO  : XSDB server has started successfully.
+20:02:10 INFO  : Processing command line option -hwspec C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/hdmi_wrapper.hdf.
+20:02:11 INFO  : Checking for hwspec changes in the project hdmi_wrapper_hw_platform_0.
+20:02:27 INFO  : Processor reset is completed for microblaze_0
+20:07:46 INFO  : Processor reset is completed for microblaze_0
+20:12:57 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+20:15:16 INFO  : Processor reset is completed for microblaze_0
+20:18:02 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+20:18:04 INFO  : Processor reset is completed for microblaze_0
+20:25:37 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+20:25:39 INFO  : Processor reset is completed for microblaze_0
+20:37:59 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+20:38:00 INFO  : Processor reset is completed for microblaze_0
+20:42:24 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+20:42:26 INFO  : Processor reset is completed for microblaze_0
+20:44:15 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+20:44:18 INFO  : Processor reset is completed for microblaze_0
+20:46:44 INFO  : Processor reset is completed for microblaze_0
+20:48:40 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+20:48:42 INFO  : Processor reset is completed for microblaze_0
+20:52:33 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+20:52:34 INFO  : Processor reset is completed for microblaze_0
+21:02:04 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+21:02:06 INFO  : Processor reset is completed for microblaze_0
+21:09:01 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+21:09:03 INFO  : Processor reset is completed for microblaze_0
+21:20:29 INFO  : Processor reset is completed for microblaze_0
+21:22:48 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+21:22:49 INFO  : Processor reset is completed for microblaze_0
+21:25:01 INFO  : Processor reset is completed for microblaze_0
+21:27:01 INFO  : Processor reset is completed for microblaze_0
+21:29:21 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+21:30:20 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+21:30:22 INFO  : Processor reset is completed for microblaze_0
+21:33:38 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+21:33:42 INFO  : Processor reset is completed for microblaze_0
+21:37:24 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+21:37:26 INFO  : Processor reset is completed for microblaze_0
+21:40:02 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+21:40:03 INFO  : Processor reset is completed for microblaze_0
+21:46:43 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+21:46:50 INFO  : Processor reset is completed for microblaze_0
+21:58:08 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+21:58:09 INFO  : Processor reset is completed for microblaze_0
+22:03:15 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+22:03:40 INFO  : Processor reset is completed for microblaze_0
+22:13:58 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+22:13:59 INFO  : Processor reset is completed for microblaze_0
+22:15:12 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+22:15:13 INFO  : Processor reset is completed for microblaze_0
+22:16:07 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+22:16:09 INFO  : Processor reset is completed for microblaze_0
+22:19:28 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+22:19:29 INFO  : Processor reset is completed for microblaze_0
+22:22:35 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+22:22:37 INFO  : Processor reset is completed for microblaze_0
+22:25:01 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+22:25:06 INFO  : Processor reset is completed for microblaze_0
+22:25:30 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+22:25:32 INFO  : Processor reset is completed for microblaze_0
+22:36:29 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+22:36:31 INFO  : Processor reset is completed for microblaze_0
+22:40:20 INFO  : Processor reset is completed for microblaze_0
+22:40:44 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+22:40:50 INFO  : Processor reset is completed for microblaze_0
+22:43:47 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+22:43:56 INFO  : Processor reset is completed for microblaze_0
+22:44:02 INFO  : Processor reset is completed for microblaze_0
+23:10:51 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+23:11:19 INFO  : Processor reset is completed for microblaze_0
+23:12:21 ERROR : Unexpected error while parsing XMD response ?: com.google.gson.JsonSyntaxException: com.google.gson.stream.MalformedJsonException: invalid number or unquoted string near 
+23:15:26 INFO  : Launching XSDB server: xsdb.bat C:/Xilinx/SDK/2015.3/scripts/xsdb/xsdb/xsdb-server.tcl
+23:15:32 INFO  : XSDB server has started successfully.
+23:15:33 INFO  : Processing command line option -hwspec C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/hdmi_wrapper.hdf.
+23:15:34 INFO  : Checking for hwspec changes in the project hdmi_wrapper_hw_platform_0.
+23:17:34 INFO  : Processor reset is completed for microblaze_0
+23:20:57 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+23:20:59 INFO  : Processor reset is completed for microblaze_0
+23:25:51 INFO  : Processor reset is completed for microblaze_0
+23:37:11 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+23:37:23 INFO  : Processor reset is completed for microblaze_0
+23:58:49 INFO  : Launching XSDB server: xsdb.bat C:/Xilinx/SDK/2015.3/scripts/xsdb/xsdb/xsdb-server.tcl
+23:58:55 INFO  : XSDB server has started successfully.
+23:58:56 INFO  : Processing command line option -hwspec C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/hdmi_wrapper.hdf.
+23:58:56 INFO  : Checking for hwspec changes in the project hdmi_wrapper_hw_platform_0.
+00:54:13 INFO  : Launching XSDB server: xsdb.bat C:/Xilinx/SDK/2015.3/scripts/xsdb/xsdb/xsdb-server.tcl
+00:54:17 INFO  : XSDB server has started successfully.
+00:54:17 INFO  : Processing command line option -hwspec C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/hdmi_wrapper.hdf.
+00:54:17 INFO  : Checking for hwspec changes in the project hdmi_wrapper_hw_platform_0.
+01:13:11 INFO  : Processor reset is completed for microblaze_0
+01:21:30 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+01:21:33 INFO  : Processor reset is completed for microblaze_0
+01:36:17 INFO  : Processor reset is completed for microblaze_0
+01:39:41 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+01:39:44 INFO  : Processor reset is completed for microblaze_0
+01:43:19 INFO  : Processor reset is completed for microblaze_0
+01:52:50 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+01:52:53 INFO  : Processor reset is completed for microblaze_0
+01:57:25 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+01:57:26 INFO  : Processor reset is completed for microblaze_0
+02:07:37 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+02:07:39 INFO  : Processor reset is completed for microblaze_0
+02:17:30 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+02:17:33 INFO  : Processor reset is completed for microblaze_0
+02:23:20 INFO  : Processor reset is completed for microblaze_0
+02:25:07 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+02:25:09 INFO  : Processor reset is completed for microblaze_0
+02:40:50 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+02:40:52 INFO  : Processor reset is completed for microblaze_0
+02:41:42 INFO  : Processor reset is completed for microblaze_0
+02:43:31 INFO  : Processor reset is completed for microblaze_0
+02:47:55 INFO  : Processor reset is completed for microblaze_0
+02:58:54 INFO  : Processor reset is completed for microblaze_0
+03:01:18 INFO  : Processor reset is completed for microblaze_0
+03:03:47 INFO  : Processor reset is completed for microblaze_0
+03:09:06 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+03:09:08 INFO  : Processor reset is completed for microblaze_0
+03:16:27 INFO  : Processor reset is completed for microblaze_0
+03:20:07 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+03:20:09 INFO  : Processor reset is completed for microblaze_0
+04:09:12 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+04:09:15 INFO  : Processor reset is completed for microblaze_0
+04:25:46 INFO  : Processor reset is completed for microblaze_0
+04:33:20 INFO  : Processor reset is completed for microblaze_0
+04:40:27 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+04:40:29 INFO  : Processor reset is completed for microblaze_0
+04:45:51 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+04:46:06 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+04:46:11 INFO  : Processor reset is completed for microblaze_0
+04:48:17 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+04:48:18 INFO  : Processor reset is completed for microblaze_0
+04:49:31 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+04:49:33 INFO  : Processor reset is completed for microblaze_0
+04:51:35 INFO  : Processor reset is completed for microblaze_0
+05:07:58 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+05:09:59 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+05:10:01 INFO  : Processor reset is completed for microblaze_0
+05:13:17 INFO  : Processor reset is completed for microblaze_0
+05:15:41 INFO  : Processor reset is completed for microblaze_0
+05:16:12 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+05:16:14 INFO  : Processor reset is completed for microblaze_0
+05:19:56 INFO  : Processor reset is completed for microblaze_0
+06:17:19 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+06:17:34 INFO  : Processor reset is completed for microblaze_0
+06:18:56 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+06:18:59 INFO  : Processor reset is completed for microblaze_0
+06:21:21 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+06:21:23 INFO  : Processor reset is completed for microblaze_0
+06:22:59 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+06:23:01 INFO  : Processor reset is completed for microblaze_0
+06:24:19 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+06:24:21 INFO  : Processor reset is completed for microblaze_0
+06:27:31 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+06:27:32 INFO  : Processor reset is completed for microblaze_0
+06:28:22 ERROR : Unexpected error while launching program.
+java.lang.RuntimeException: The program file specified in the launch configuration does not exist
+	at com.xilinx.sdk.debug.core.XilinxAppLaunchConfigurationDelegate.runApplication(XilinxAppLaunchConfigurationDelegate.java:552)
+	at com.xilinx.sdk.debug.core.XilinxAppLaunchConfigurationDelegate.launch(XilinxAppLaunchConfigurationDelegate.java:296)
+	at com.xilinx.sdk.debug.ui.XilinxAppLaunchDelegateWrapper.launch(XilinxAppLaunchDelegateWrapper.java:31)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:858)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:707)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin.buildAndLaunch(DebugUIPlugin.java:1018)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin$8.run(DebugUIPlugin.java:1222)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:53)
+06:36:51 ERROR : Unexpected error while parsing XMD response ?: com.google.gson.JsonSyntaxException: com.google.gson.stream.MalformedJsonException: invalid number or unquoted string near 
+06:38:13 INFO  : Launching XSDB server: xsdb.bat C:/Xilinx/SDK/2015.3/scripts/xsdb/xsdb/xsdb-server.tcl
+06:38:20 INFO  : XSDB server has started successfully.
+06:38:21 INFO  : Processing command line option -hwspec C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/hdmi_wrapper.hdf.
+06:38:22 INFO  : Checking for hwspec changes in the project hdmi_wrapper_hw_platform_0.
+06:38:50 INFO  : Processor reset is completed for microblaze_0
+06:39:54 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+06:39:57 INFO  : Processor reset is completed for microblaze_0
+06:44:34 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+06:44:36 INFO  : Processor reset is completed for microblaze_0
+06:45:40 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+06:45:43 INFO  : Processor reset is completed for microblaze_0
+06:45:57 INFO  : Processor reset is completed for microblaze_0
+06:47:10 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+06:47:11 INFO  : Processor reset is completed for microblaze_0
+06:55:25 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+06:55:26 INFO  : Processor reset is completed for microblaze_0
+06:57:47 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+06:57:48 INFO  : Processor reset is completed for microblaze_0
+07:04:57 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+07:04:58 INFO  : Processor reset is completed for microblaze_0
+07:09:33 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+07:09:35 INFO  : Processor reset is completed for microblaze_0
+07:11:09 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+07:11:11 INFO  : Processor reset is completed for microblaze_0
+07:11:22 INFO  : Processor reset is completed for microblaze_0
+07:16:23 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+07:16:25 INFO  : Processor reset is completed for microblaze_0
+07:17:23 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+07:17:43 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+07:17:45 INFO  : Processor reset is completed for microblaze_0
+07:18:35 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+07:18:37 INFO  : Processor reset is completed for microblaze_0
+07:19:16 ERROR : Unexpected error while parsing XMD response ?: com.google.gson.JsonSyntaxException: com.google.gson.stream.MalformedJsonException: invalid number or unquoted string near 
+07:20:35 INFO  : Launching XSDB server: xsdb.bat C:/Xilinx/SDK/2015.3/scripts/xsdb/xsdb/xsdb-server.tcl
+07:20:39 INFO  : XSDB server has started successfully.
+07:20:39 INFO  : Processing command line option -hwspec C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/hdmi_wrapper.hdf.
+07:20:40 INFO  : Checking for hwspec changes in the project hdmi_wrapper_hw_platform_0.
+07:21:07 INFO  : Processor reset is completed for microblaze_0
+07:22:36 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+07:22:38 INFO  : Processor reset is completed for microblaze_0
+07:23:49 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+07:23:50 INFO  : Processor reset is completed for microblaze_0
+07:25:52 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+07:25:54 INFO  : Processor reset is completed for microblaze_0
+07:27:23 ERROR : Unexpected error while parsing XMD response ?: com.google.gson.JsonSyntaxException: com.google.gson.stream.MalformedJsonException: invalid number or unquoted string near 
+07:27:59 INFO  : Launching XSDB server: xsdb.bat C:/Xilinx/SDK/2015.3/scripts/xsdb/xsdb/xsdb-server.tcl
+07:28:02 INFO  : XSDB server has started successfully.
+07:28:02 INFO  : Processing command line option -hwspec C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/hdmi_wrapper.hdf.
+07:28:03 INFO  : Checking for hwspec changes in the project hdmi_wrapper_hw_platform_0.
+07:28:13 INFO  : Processor reset is completed for microblaze_0
+07:30:35 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+07:30:38 INFO  : Processor reset is completed for microblaze_0
+07:32:46 INFO  : Processor reset is completed for microblaze_0
+07:33:49 INFO  : Processor reset is completed for microblaze_0
+07:35:18 INFO  : Processor reset is completed for microblaze_0
+07:36:17 ERROR : Unexpected error while parsing XMD response ?: com.google.gson.JsonSyntaxException: com.google.gson.stream.MalformedJsonException: invalid number or unquoted string near 
+07:36:57 INFO  : Launching XSDB server: xsdb.bat C:/Xilinx/SDK/2015.3/scripts/xsdb/xsdb/xsdb-server.tcl
+07:37:01 INFO  : XSDB server has started successfully.
+07:37:02 INFO  : Processing command line option -hwspec C:/Users/Fadime/Documents/ECE532/PROJECT/NexysVideo-master/Projects/hdmi/proj/hdmi.sdk/hdmi_wrapper.hdf.
+07:37:02 INFO  : Checking for hwspec changes in the project hdmi_wrapper_hw_platform_0.
+07:38:14 INFO  : Processor reset is completed for microblaze_0
+07:40:37 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+07:40:41 INFO  : Processor reset is completed for microblaze_0
+08:30:12 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+08:30:14 INFO  : Processor reset is completed for microblaze_0
+08:39:59 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+08:40:49 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+08:41:02 INFO  : Processor reset is completed for microblaze_0
+08:52:42 INFO  : microblaze_0 Processor is in use. Please stop existing Run or Debug sessions before launching.
+08:52:45 INFO  : Processor reset is completed for microblaze_0
+12:59:33 INFO  : Processor reset is completed for microblaze_0
+13:24:49 ERROR : Unexpected error while parsing XMD response ?: com.google.gson.JsonSyntaxException: com.google.gson.stream.MalformedJsonException: invalid number or unquoted string near 

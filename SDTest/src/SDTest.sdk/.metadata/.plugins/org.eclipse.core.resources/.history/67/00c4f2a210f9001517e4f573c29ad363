@@ -1,0 +1,549 @@
+/*
+ * fat_filesystem.c
+ *
+ *  Created on: Mar 11, 2016
+ *      Author: Jesse
+ */
+
+#include "stdlib.h"
+#include "xil_types.h"
+#include "xil_printf.h"
+#include "fat_filesystem.h"
+#include "sd_filesystem.h"
+
+extern u32 spi_dev_status;
+
+//default date and time
+u16 FS_curr_date = 0xB599; //	2070/12/25
+u16 FS_curr_time = 0x0000;
+
+FILESYSTEM_T FS_filesystem; //make this static later
+
+s32 init_fat_filesystem() {
+	u8 bsraw[SD_INIT_SEC_SIZE];
+
+	s32 err = sd_init_card();
+
+	if(err < 0) {
+		return err;
+	}
+
+	sd_read(0, 0, bsraw, SD_INIT_SEC_SIZE);
+
+	//fuck you microblaze >:(
+	FS_filesystem.bootsector.bytes_per_sector = ((bsraw[12] << 8) | bsraw[11]);
+	FS_filesystem.bootsector.sectors_per_cluster = bsraw[13];
+	FS_filesystem.bootsector.FAT_count = bsraw[16];
+	FS_filesystem.bootsector.root_dir_entries = (bsraw[18] << 8) | bsraw[17];
+	FS_filesystem.bootsector.sectors_per_FAT = (bsraw[23] << 8) | bsraw[22];
+
+	FS_filesystem.fat_sector = bsraw[14];
+	FS_filesystem.root_dir_sector = FS_filesystem.bootsector.FAT_count *
+									FS_filesystem.bootsector.sectors_per_FAT +
+									FS_filesystem.fat_sector;
+	FS_filesystem.root_dir_num_sectors = (FS_filesystem.bootsector.root_dir_entries * 32) /
+											FS_filesystem.bootsector.bytes_per_sector;
+	FS_filesystem.data_start_sector = FS_filesystem.root_dir_num_sectors +
+										FS_filesystem.root_dir_sector - 2 * FS_filesystem.bootsector.sectors_per_cluster;
+
+	return 0;
+}
+
+s32 fat_strncmp(u8 * str1, u8 * str2, u32 len) {
+	int i;
+
+	for(i = 0; i < len; ++i) {
+		if(str1[i] == (u8)'\0') {
+			if(str2[i] == (u8)'\0')
+				return 0;
+			else
+				return -1;
+		}
+		else if(str2[i] == (u8)'\0') {
+			return -1;
+		}
+		else if(str2[i] != str1[i])
+			return -1;
+	}
+
+	return 0;
+}
+
+void print_root_dir(ROOT_DIR_ENTRY_T * rde) {
+	int i;
+	u16 tc, dc;
+
+	for(i = 0; i < 8; ++i)
+		xil_printf("%c", (char)(rde->filename[i]));
+
+	xil_printf(".");
+
+	for(i = 0; i < 3; ++i)
+		xil_printf("%c", (char)(rde->ext[i]));
+
+	xil_printf(": Attributes = 0x%02X; ", rde->attributes);
+	xil_printf("First FN char: 0x%02X\n", rde->filename[0]);
+	xil_printf("Start Cluster: %04X\n",
+			(rde->start_cluster >> 8) | (rde->start_cluster << 8));
+
+	tc = rde->time_modified;//(rde->time_created >> 8) | (rde->time_created << 8);
+	dc = rde->date_modified;//(rde->date_created >> 8) | (rde->date_created << 8);
+
+	//xil_printf("time_created = 0x%04X\n", tc);
+	//xil_printf("date_created = 0x%04X\n", dc);
+
+	xil_printf("Time Created: %02d:%02d:%02d; ",
+			tc >> 11,
+			(tc >> 5) & 0x3F,
+			(tc & 0x1F) * 2);
+	xil_printf("Date Created: %04d/%02d/%02d;\n",
+			(dc >> 9) + 1980,
+			(dc >> 5) & 0xF,
+			dc & 0x1F);
+	xil_printf("File Size: %d\n", rde->file_size);
+
+	return;
+}
+
+s32 allocate_new_cluster(FILE * fd) { //function should be made static later
+	s32 i, j, status;
+	u8 FAT_sector[SD_INIT_SEC_SIZE];
+	u8 found = 0;
+	u16 terminal = 0xFFFF;
+
+	if(fd->num_clusters >= fd->max_clusters) {
+		return -1;
+	}
+
+	for(i = 0; i < FS_filesystem.bootsector.sectors_per_FAT; ++i) {
+		status = sd_read(FS_filesystem.fat_sector + i, 0, FAT_sector, SD_INIT_SEC_SIZE);
+
+		if(status < 0) {
+			return status;
+		}
+
+		for(j = 0; j < FS_filesystem.bootsector.bytes_per_sector; j += 2) {
+			if(FAT_sector[j] == 0 && FAT_sector[j + 1] == 0) {
+				fd->clusters[fd->num_clusters] = (u16)((i * FS_filesystem.bootsector.bytes_per_sector + j) / 2);
+				found = 1;
+			}
+		}
+
+		if(found) {
+			for(j = 0; j < FS_filesystem.bootsector.FAT_count;++j) {
+				status = sd_write(FAT_SECTOR(fd->clusters[fd->num_clusters]) + FS_filesystem.fat_sector + j * FS_filesystem.data_start_sector,
+									FAT_OFFSET(fd->clusters[fd->num_clusters]),
+									(u8 *)(&terminal), 2);
+
+				if(status < 0)
+					return status;
+
+				if(fd->num_clusters != 0) {
+					status = sd_write(FAT_SECTOR(fd->clusters[fd->num_clusters - 1]),
+										FAT_OFFSET(fd->clusters[fd->num_clusters - 1]),
+										(u8 *)(&(fd->clusters[fd->num_clusters])), 2);
+				}
+
+				if(status < 0)
+					return status;
+
+				fd->num_clusters += 1;
+			}
+		}
+	}
+
+	return found?0:-2;
+}
+
+FILE * fat_open(u8 * filename) {
+	u8 found = 0;
+	u8 root_dir[512];
+	u8 FAT_table[512];
+	u32 root_dir_sec;
+	u16 curr_sector;
+	ROOT_DIR_ENTRY_T * dir_entry;
+	int i, j;
+	FILE * fd = (FILE *)malloc(sizeof(fd));
+
+	//manually copy filename into fd data structure
+	for(i = 0; i < 8; ++i) {
+		if(filename[i] == (u8)'\0' || filename[i] == (u8)'.')
+			break;
+
+		fd->filename[i] = filename[i];
+	}
+
+	//manually copy extension into fd data struct
+	for(j = 0; j < 3; ++j) {
+		if(filename[i + j] == (u8)'\0')
+			break;
+
+		if(filename[i + j] == (u8)'.') {
+			++i;
+			--j;
+			continue;
+		}
+
+		fd->ext[j] = filename[i + j];
+	}
+
+	fd->status = 0;
+
+	fd->current_sector = 0;
+	fd->current_offset = 0;
+	fd->current_cluster = 0;
+
+	//find file in root_directory
+	for(i = 0; i < FS_filesystem.root_dir_num_sectors; ++i) {
+		if(sd_read(i + FS_filesystem.root_dir_sector, 0, root_dir, SD_INIT_SEC_SIZE) < 0) {
+			free(fd);
+			return NULL;
+		}
+
+		for(j = 0; j < 16; ++j) {
+			dir_entry = (ROOT_DIR_ENTRY_T *)(j*32 + root_dir);
+
+			if(dir_entry->filename[0] == 0x0) {
+				found = 1;
+				break;
+			}
+
+			if((dir_entry->attributes & 0x1F) != 0)
+				continue;
+
+			print_root_dir(dir_entry);
+			if(fat_strncmp(dir_entry->filename, fd->filename, 8) != 0)
+				continue;
+
+			if(fat_strncmp(dir_entry->ext, fd->ext, 3) != 0)
+				continue;
+
+			found = 1;
+			break;
+		}
+
+		if(found != 0)
+			break;
+	}
+
+	//simplifying assumption: never going to fill the root dir exiting
+	//							loop means entry found or empty
+
+	root_dir_sec = i + FS_filesystem.root_dir_sector;
+
+	//fd->clusters = (u16 *)malloc(8*sizeof(u16)); //assume upper bound of 8 clusters per file (256KiB max per file)
+	fd->num_clusters = 1;	//initial number of clusters (before reading dir entry)
+	fd->max_clusters = 8;	//clusters not dynamically allocated, this isn't used ATM
+
+
+	//If found dir entry is empty, allocate space for the new file in microSD
+	if(dir_entry->filename[0] == 0x0) {
+		xil_printf("Writing new entry\n\r");
+		if(allocate_new_cluster(fd) < 0) {
+			free(fd);
+			return NULL;
+		}
+		/*
+		for(i = 0; i < FS_filesystem.bootsector.sectors_per_FAT; ++i) {
+			if(sd_read(FS_filesystem.fat_sector + i, 0, FAT_table, SD_INIT_SEC_SIZE) < 0) {
+				free(fd);
+				return NULL;
+			}
+
+			found = 0;
+			for(j = 0; j < SD_INIT_SEC_SIZE; j += 2) {
+				if(FAT_table[j] == 0x00 && FAT_table[j + 1] == 0x00) {
+					FAT_table[j] = 0xFF;
+					FAT_table[j+1] = 0xFF;
+					found = 1;
+					break;
+				}
+			}
+
+			if(found != 0) {
+				//find cluster number of first empty cluster
+				dir_entry->start_cluster = (i * SD_INIT_SEC_SIZE + j) / 2;
+
+				//begin writing directory entry data
+				for(j = 0; j < 8; ++j) {
+					dir_entry->filename[j] = fd->filename[j];
+				}
+
+				for(j = 0; j < 3; ++j) {
+					dir_entry->ext[j] = fd->ext[j];
+				}
+
+				dir_entry->time_modified = FS_curr_time;
+				dir_entry->date_modified = FS_curr_date;
+
+				dir_entry->attributes = FILE_ARCHIVE;
+				dir_entry->file_size = 0;
+
+
+				fd->clusters[0] = dir_entry->start_cluster;
+				fd->num_clusters = 1;
+				fd->file_size = 0;
+				break;
+			}
+
+		}
+
+		//write over fat tables
+		for(j = 0; j < FS_filesystem.bootsector.FAT_count; ++j) {
+			sd_write(FS_filesystem.fat_sector + i + j * FS_filesystem.bootsector.sectors_per_FAT,
+					0, FAT_table, SD_INIT_SEC_SIZE);
+		}
+		*/
+
+		//write over root dir to add new entry
+		sd_write(root_dir_sec, 0, root_dir, SD_INIT_SEC_SIZE);
+	}
+	else {
+
+		fd->file_size = dir_entry->file_size;
+
+		curr_sector = FAT_SECTOR(dir_entry->start_cluster);
+
+		sd_read(FS_filesystem.fat_sector + curr_sector,
+				0, FAT_table, SD_INIT_SEC_SIZE);
+
+		fd->clusters[0] = dir_entry->start_cluster;//(FAT_table[FAT_OFFSET(dir_entry->start_cluster)]) |
+							//(FAT_table[FAT_OFFSET(dir_entry->start_cluster) + 1] << 8);
+
+		//sd_debug_print_hex(FAT_table, SD_INIT_SEC_SIZE, 16);
+
+		for(i = 1; fd->clusters[i - 1] != (u16)0xFFFF && i < 8; ++i) {
+
+			//xil_printf("fd->clusters[%d - 1] = 0x%04X\n", i, fd->clusters[i - 1]);
+
+			if(curr_sector != FAT_SECTOR(fd->clusters[i - 1])) {
+				curr_sector = FAT_SECTOR(fd->clusters[i - 1]);
+
+				sd_read(FS_filesystem.fat_sector + curr_sector,
+						0, FAT_table, SD_INIT_SEC_SIZE);
+			}
+
+			//assume we don't need more than 8 cluster array
+			fd->clusters[i] = FAT_table[FAT_OFFSET(fd->clusters[i - 1])] |
+							(FAT_table[FAT_OFFSET(fd->clusters[i - 1]) + 1] << 8);
+		}
+
+		fd->num_clusters = i - 1;
+	}
+
+	return fd;
+}
+
+void fat_seek(FILE * fd, u32 byte) {
+	if(fd == NULL)
+		return;
+
+	//write dirty data to memory before losing position in file
+	if((fd->status & FILE_STATUS_DIRTY) != 0) {
+		sd_write(CLUSTER_SEC(fd),
+				0, fd->loaded_sector, SD_INIT_SEC_SIZE);
+
+		fd->status &= ~FILE_STATUS_DIRTY;
+	}
+
+	//modify position in file
+	if(byte >= fd->file_size || byte == (u32)(-1)) {
+		fd->current_offset = SEEK_OFFSET(fd->file_size);
+		fd->current_sector = SEEK_SECTOR(fd->file_size);
+		fd->current_cluster = fd->num_clusters - 1;
+	}
+	else {
+		fd->current_offset = SEEK_OFFSET(byte);
+		fd->current_sector = SEEK_SECTOR(byte);
+		fd->current_cluster = fd->current_sector / FS_filesystem.bootsector.sectors_per_cluster;
+		fd->current_sector = fd->current_sector % FS_filesystem.bootsector.sectors_per_cluster;
+	}
+
+	fd->status &= ~FILE_STATUS_VALID;
+
+	return;
+}
+
+s32 fat_read(FILE * fd, u8 * buffer, u32 length) {
+	s32 len = 0;
+	s32 i;
+	s32 status;
+
+	if(fd == NULL) {
+		xil_printf("File descriptor null\n\r");
+		return -1;
+	}
+	else if(buffer == NULL) {
+		xil_printf("Byte buffer null\n\r");
+		return -1;
+	}
+
+	//xil_printf("CLUSTER_SEC = %d\n", CLUSTER_SEC(fd));
+
+	//xil_printf("fd->data_start = %d\n", FS_filesystem.data_start_sector);
+
+	if((fd->status & FILE_STATUS_VALID) == 0) {
+		status = sd_read(CLUSTER_SEC(fd),
+				0, fd->loaded_sector, SD_INIT_SEC_SIZE);
+
+		if(status < 0)
+			return status;
+
+		fd->status |= FILE_STATUS_VALID;
+	}
+
+	while(1) {
+		for(i = 0; i < length && fd->current_offset + i < SD_INIT_SEC_SIZE &&
+				fd->file_size > (BYTE_POS(fd) + i); ++i) {
+			*(buffer++) = fd->loaded_sector[fd->current_offset + i];
+		}
+
+		length -= i;
+		len += i;
+
+		//xil_printf("fd->current_offset + i = %d + %d = ", fd->current_offset, i);
+
+		fd->current_offset += i;
+
+		//xil_printf("%d\n", fd->current_offset);
+
+		if(fd->current_offset >= FS_filesystem.bootsector.bytes_per_sector) {
+			if((fd->status & FILE_STATUS_DIRTY) != 0) {
+				status = sd_write(CLUSTER_SEC(fd), 0, fd->loaded_sector, SD_INIT_SEC_SIZE);
+
+				if(status < 0)
+					return status;
+
+				fd->status &= ~FILE_STATUS_DIRTY;
+			}
+
+			fd->current_sector += 1;
+			if(fd->current_sector >= FS_filesystem.bootsector.sectors_per_cluster) {
+				fd->current_cluster += 1;
+				if(fd->current_cluster >= fd->num_clusters) {
+					xil_printf("Cluster array overflow\n");
+					return len;
+				}
+
+				fd->current_sector = 0;
+			}
+
+			fd->current_offset = 0;
+
+			if(fd->clusters[fd->current_cluster] != (u16)0xFFFF) {
+				status = sd_read(CLUSTER_SEC(fd), 0, fd->loaded_sector, SD_INIT_SEC_SIZE);
+
+				if(status < 0)
+					return status;
+			}
+		}
+		//xil_printf("BYTE_POS(fd) = %d\n", BYTE_POS(fd));
+
+		//xil_printf("BYTE_POS = %d\n\r", BYTE_POS(fd));
+		if(fd->file_size <= BYTE_POS(fd)) {
+			if(len == 0)
+				return FAT_EOF;
+			else
+				break;
+		}
+
+		if(length <= 0) {
+			break;
+		}
+	}
+
+	return len;
+}
+
+s32 fat_write(FILE * fd, u8 * buffer, u32 length) {
+	s32 i;
+	s32 status;
+	s32 len = 0;
+	//u8 FAT_sector[SD_INIT_SEC_SIZE];
+
+	if(fd == NULL) {
+		xil_printf("File descriptor null\n\r");
+		return -1;
+	}
+	else if(buffer == NULL) {
+		xil_printf("Byte buffer null\n\r");
+		return -1;
+	}
+
+	if((fd->status & FILE_STATUS_VALID) == 0) {
+		status = sd_read(CLUSTER_SEC(fd),
+				0, fd->loaded_sector, SD_INIT_SEC_SIZE);
+
+		if(status < 0)
+			return status;
+
+		fd->status |= FILE_STATUS_VALID;
+	}
+
+	while(1) {
+		for(i = 0; i < length && fd->current_offset + i < SD_INIT_SEC_SIZE; ++i) {
+			fd->loaded_sector[fd->current_offset + i] = *(buffer++);
+		}//need to update filesize as you go along
+
+		if(i != 0) {
+			fd->status |= FILE_STATUS_DIRTY;
+		}
+
+		length -= i;
+		len += i;
+
+		if(fd->current_offset + i >= FS_filesystem.bootsector.bytes_per_sector) {
+			sd_write(CLUSTER_SEC(fd), 0, fd->loaded_sector, SD_INIT_SEC_SIZE);
+		}
+
+		fd->current_offset += i;
+
+		if(fd->current_offset >= FS_filesystem.bootsector.bytes_per_sector) {
+			fd->current_sector += 1;
+			if(fd->current_sector >= FS_filesystem.bootsector.sectors_per_cluster) {
+				fd->current_cluster += 1;
+
+				if(fd->current_cluster >= fd->max_clusters) {
+					xil_printf("Reached max cluster limit\n\r");
+
+					break; //not graceful (doesn't update filesize)
+				}
+
+				if(fd->current_cluster >= fd->num_clusters) {
+					if(allocate_new_cluster(fd) < 0) {
+						xil_printf("Could not allocate new cluster on write\n\r");
+						return -1;
+					}
+				}
+			}
+
+			fd->current_offset = 0;
+		}
+
+		if(length <= 0) {
+			break;
+		}
+
+	}
+
+	if(fd->file_size < BYTE_POS(fd)) {
+		fd->file_size = BYTE_POS(fd);
+	}
+
+	return len;
+}
+
+void fat_close(FILE * fd) {
+	s32 status;
+
+	if(fd->status & FILE_STATUS_DIRTY) {
+		status = sd_write(CLUSTER_SEC(fd), 0, fd->loaded_sector, SD_INIT_SEC_SIZE);
+
+		if(status < 0)
+			return status;
+
+		fd->status &= ~FILE_STATUS_DIRTY;
+	}
+
+	return 0;
+}

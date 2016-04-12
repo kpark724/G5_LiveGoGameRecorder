@@ -1,0 +1,35 @@
+13:24:47 **** Auto Build of configuration Debug for project videodemo ****
+make all 
+'Building file: ../src/video_demo.c'
+'Invoking: MicroBlaze gcc compiler'
+mb-gcc -Wall -O0 -g3 -c -fmessage-length=0 -MT"src/video_demo.o" -I../../videodemo_bsp/microblaze_0/include -mlittle-endian -mxl-barrel-shift -mxl-pattern-compare -mno-xl-soft-div -mcpu=v9.5 -mno-xl-soft-mul -mxl-multiply-high -mhard-float -mxl-float-convert -mxl-float-sqrt -Wl,--no-relax -MMD -MP -MF"src/video_demo.d" -MT"src/video_demo.d" -o "src/video_demo.o" "../src/video_demo.c"
+../src/video_demo.c: In function 'DemoRun':
+../src/video_demo.c:376:4: warning: implicit declaration of function 'MB_Sleep' [-Wimplicit-function-declaration]
+    MB_Sleep(50);
+    ^
+../src/video_demo.c: In function 'start_frame_read':
+../src/video_demo.c:724:6: warning: variable 'Status' set but not used [-Wunused-but-set-variable]
+  int Status;
+      ^
+../src/video_demo.c: In function 'wait_if_ip_busy':
+../src/video_demo.c:791:17: warning: variable 'temp2' set but not used [-Wunused-but-set-variable]
+  int temp_busy, temp2;
+                 ^
+../src/video_demo.c: In function 'stone_detection':
+../src/video_demo.c:947:1: error: 'x' undeclared (first use in this function)
+ x
+ ^
+../src/video_demo.c:947:1: note: each undeclared identifier is reported only once for each function it appears in
+../src/video_demo.c:948:4: error: expected ';' before 'while'
+    while ((XUartLite_IsReceiveEmpty(UART_BASEADDR) && !fRefresh)){}
+    ^
+../src/video_demo.c:924:6: warning: unused variable 'hand' [-Wunused-variable]
+  int hand=0;
+      ^
+../src/video_demo.c:923:6: warning: unused variable 'hand_keeper' [-Wunused-variable]
+  int hand_keeper = 0;
+      ^
+make: *** [src/video_demo.o] Error 1
+
+13:24:47 Build Finished (took 859ms)
+

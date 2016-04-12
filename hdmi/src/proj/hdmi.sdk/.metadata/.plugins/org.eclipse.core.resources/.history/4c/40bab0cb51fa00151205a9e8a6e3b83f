@@ -1,0 +1,1398 @@
+/************************************************************************/
+/*																		*/
+/*	video_demo.c	--	ZYBO Video demonstration 						*/
+/*																		*/
+/************************************************************************/
+/*	Author: Sam Bobrowicz												*/
+/*	Copyright 2015, Digilent Inc.										*/
+/************************************************************************/
+/*  Module Description: 												*/
+/*																		*/
+/*		This file contains code for running a demonstration of the		*/
+/*		Video input and output capabilities on the ZYBO. It is a good	*/
+/*		example of how to properly use the display_ctrl and				*/
+/*		video_capture drivers.											*/
+/*																		*/
+/*																		*/
+/************************************************************************/
+/*  Revision History:													*/
+/* 																		*/
+/*		11/25/2015(SamB): Created										*/
+/*																		*/
+/************************************************************************/
+
+/* ------------------------------------------------------------ */
+/*				Include File Definitions						*/
+/* ------------------------------------------------------------ */
+
+#include "video_demo.h"
+#include "video_capture/video_capture.h"
+#include "display_ctrl/display_ctrl.h"
+#include "intc/intc.h"
+#include <stdio.h>
+#include "xuartlite_l.h"
+//#include "xuartps.h"
+#include "math.h"
+#include <ctype.h>
+#include <stdlib.h>
+#include "xil_types.h"
+#include "xil_cache.h"
+#include "xparameters.h"
+
+//#include "sgf_writer.h"
+//#include "fat_filesystem.h"
+
+
+/*
+ * XPAR redefines
+ */
+#define DYNCLK_BASEADDR XPAR_AXI_DYNCLK_0_BASEADDR
+#define VGA_VDMA_ID XPAR_AXIVDMA_0_DEVICE_ID
+#define VGA_VDMA_ID_1 XPAR_AXIVDMA_1_DEVICE_ID
+#define DISP_VTC_ID XPAR_VTC_0_DEVICE_ID
+#define VID_VTC_ID XPAR_VTC_1_DEVICE_ID
+#define VID_GPIO_ID XPAR_AXI_GPIO_VIDEO_DEVICE_ID
+#define VID_VTC_IRPT_ID XPAR_INTC_0_VTC_1_VEC_ID
+#define VID_GPIO_IRPT_ID XPAR_INTC_0_GPIO_0_VEC_ID
+#define SCU_TIMER_ID XPAR_AXI_TIMER_0_DEVICE_ID
+#define UART_BASEADDR XPAR_UARTLITE_0_BASEADDR
+
+/* ------------------------------------------------------------ */
+/*				Global Variables								*/
+/* ------------------------------------------------------------ */
+
+/*
+ * Display and Video Driver structs
+ */
+DisplayCtrl dispCtrl;
+XAxiVdma vdma;
+XAxiVdma vdma_1;
+VideoCapture videoCapt;
+INTC intc;
+char fRefresh; //flag used to trigger a refresh of the Menu on video detect
+
+void stone_detection(int is_timing_run);
+/*
+ * Framebuffers for video data
+ */
+u8 frameBuf[DISPLAY_NUM_FRAMES][DEMO_MAX_FRAME];
+u8 *pFrames[DISPLAY_NUM_FRAMES]; //array of pointers to the frame buffers
+
+/*
+ * Interrupt vector table
+ */
+const ivt_t ivt[] = {
+	videoGpioIvt(VID_GPIO_IRPT_ID, &videoCapt),
+	videoVtcIvt(VID_VTC_IRPT_ID, &(videoCapt.vtc))
+};
+
+/* ------------------------------------------------------------ */
+/*				Procedure Definitions							*/
+/* ------------------------------------------------------------ */
+
+/*
+extern u8 spi_dev_status;
+extern void sd_trivial_delay(u32 cycles);
+extern volatile unsigned int * cd_ptr;
+extern FILESYSTEM_T FS_filesystem;
+*/
+
+
+int main(void)
+{
+	// includes the initialization of the 2nd IP
+	DemoInitialize();
+
+	DemoRun();
+
+	return 0;
+}
+
+
+void DemoInitialize()
+{
+	int Status;
+	XAxiVdma_Config *vdmaConfig;
+	XAxiVdma_Config *vdmaConfig_1;
+	int i;
+
+	/*
+	 * Initialize an array of pointers to the 3 frame buffers
+	 */
+	for (i = 0; i < DISPLAY_NUM_FRAMES; i++)
+	{
+		pFrames[i] = frameBuf[i];
+	}
+
+	/*
+	 * Initialize VDMA driver
+	 */
+	vdmaConfig = XAxiVdma_LookupConfig(VGA_VDMA_ID);
+	if (!vdmaConfig)
+	{
+		xil_printf("No video DMA found for ID %d\r\n", VGA_VDMA_ID);
+		return;
+	}
+	Status = XAxiVdma_CfgInitialize(&vdma, vdmaConfig, vdmaConfig->BaseAddress);
+	if (Status != XST_SUCCESS)
+	{
+		xil_printf("VDMA Configuration Initialization failed %d\r\n", Status);
+		return;
+	}
+
+	//config second vdma
+	vdmaConfig_1 = XAxiVdma_LookupConfig(VGA_VDMA_ID_1);
+		if (!vdmaConfig_1)
+		{
+			xil_printf("No video DMA found for ID %d\r\n", VGA_VDMA_ID_1);
+			return;
+		}
+		Status = XAxiVdma_CfgInitialize(&vdma_1, vdmaConfig_1, vdmaConfig_1->BaseAddress);
+		if (Status != XST_SUCCESS)
+		{
+			xil_printf("VDMA Configuration Initialization failed %d\r\n", Status);
+			return;
+		}
+
+	/*
+	 * Initialize the Display controller and start it
+	 */
+	Status = DisplayInitialize(&dispCtrl, &vdma, DISP_VTC_ID, DYNCLK_BASEADDR, pFrames, DEMO_STRIDE);
+	if (Status != XST_SUCCESS)
+	{
+		xil_printf("Display Ctrl initialization failed during demo initialization%d\r\n", Status);
+		return;
+	}
+	Status = DisplayStart(&dispCtrl);
+	if (Status != XST_SUCCESS)
+	{
+		xil_printf("Couldn't start display during demo initialization%d\r\n", Status);
+		return;
+	}
+
+
+
+
+
+
+	/*
+	 * Initialize the Interrupt controller and start it.
+	 */
+	Status = fnInitInterruptController(&intc);
+	if(Status != XST_SUCCESS) {
+		xil_printf("Error initializing interrupts");
+		return;
+	}
+	fnEnableInterrupts(&intc, &ivt[0], sizeof(ivt)/sizeof(ivt[0]));
+
+	/*
+	 * Initialize the Video Capture device
+	 */
+	Status = VideoInitialize(&videoCapt, &intc, &vdma, VID_GPIO_ID, VID_VTC_ID, VID_VTC_IRPT_ID, pFrames, DEMO_STRIDE, DEMO_START_ON_DET);
+	if (Status != XST_SUCCESS)
+	{
+		xil_printf("Video Ctrl initialization failed during demo initialization%d\r\n", Status);
+		return;
+	}
+
+	/*
+	 * Set the Video Detect callback to trigger the menu to reset, displaying the new detected resolution
+	 */
+	VideoSetCallback(&videoCapt, DemoISR, &fRefresh);
+
+	//DemoPrintTest(dispCtrl.framePtr[dispCtrl.curFrame], dispCtrl.vMode.width, dispCtrl.vMode.height, dispCtrl.stride, DEMO_PATTERN_1);
+
+
+
+	return;
+}
+
+void our_vdma_init(){
+
+
+
+}
+void print_board_macros();
+
+
+
+typedef struct Moves{
+	char color;
+	char j;
+	char i;
+}Move;
+
+Move move_seq[800];
+int cur_move_seq_index = 0;
+
+
+void mem_show(){
+	// so this is something that we would add for the actual sgf file writer to know that the move sequence is done
+	move_seq[cur_move_seq_index+1].color = 0;
+
+	// you are here!
+	int i;
+	int num_display = 20;
+	int disp_move_seq_index = 0;
+
+	char user_input;
+
+	int end_of_sequence = 0;
+	xil_printf("-----------------------\n\r");
+	while(disp_move_seq_index < 800 && !end_of_sequence){
+		for (i = 0; i < num_display; i++){
+			xil_printf("%d %d %d\n\r", \
+					move_seq[disp_move_seq_index].color, \
+					move_seq[disp_move_seq_index].j, \
+					move_seq[disp_move_seq_index].i);
+			if (move_seq[disp_move_seq_index].color == 0)
+				end_of_sequence = 1;
+			disp_move_seq_index++;
+		}
+//		xil_printf("-----------------------\n\r");
+		while (XUartLite_IsReceiveEmpty(UART_BASEADDR)){}
+		user_input = XUartLite_ReadReg(UART_BASEADDR, XUL_RX_FIFO_OFFSET);
+		if (user_input == 'q')
+			return;
+
+
+	}
+	xil_printf("Memory display complete! \n\r");
+	return;
+}
+
+
+void DemoRun()
+{
+	int nextFrame = 0;
+	char userInput = 0;
+	u32 locked;
+	XGpio *GpioPtr = &videoCapt.gpio;
+
+	/* Flush UART FIFO */
+	while (!XUartLite_IsReceiveEmpty(UART_BASEADDR))
+	{
+		XUartLite_ReadReg(UART_BASEADDR, XUL_RX_FIFO_OFFSET);
+	}
+	while (userInput != 'w')
+	{
+		fRefresh = 0;
+
+		DemoPrintMenu();
+
+		/* Wait for data on UART */
+		while (XUartLite_IsReceiveEmpty(UART_BASEADDR) && !fRefresh)
+		{}
+
+		/* Store the first character in the UART receive FIFO and echo it */
+		if (!XUartLite_IsReceiveEmpty(UART_BASEADDR))
+		{
+			userInput = XUartLite_ReadReg(UART_BASEADDR, XUL_RX_FIFO_OFFSET);
+			xil_printf("%c", userInput);
+		}
+		else  //Refresh triggered by video detect interrupt
+		{
+			userInput = 'r';
+		}
+
+		switch (userInput)
+		{
+		case '1':
+			DemoChangeRes();
+			break;
+		case '2':
+			nextFrame = dispCtrl.curFrame + 1;
+			if (nextFrame >= DISPLAY_NUM_FRAMES)
+			{
+				nextFrame = 0;
+			}
+			DisplayChangeFrame(&dispCtrl, nextFrame);
+			break;
+		case '3':
+			DemoPrintTest(pFrames[dispCtrl.curFrame], dispCtrl.vMode.width, dispCtrl.vMode.height, DEMO_STRIDE, DEMO_PATTERN_0);
+			break;
+		case '4':
+			DemoPrintTest(pFrames[dispCtrl.curFrame], dispCtrl.vMode.width, dispCtrl.vMode.height, DEMO_STRIDE, DEMO_PATTERN_1);
+			break;
+		case '5':
+			if (videoCapt.state == VIDEO_STREAMING)
+				VideoStop(&videoCapt);
+			else
+				VideoStart(&videoCapt);
+			break;
+		case '6':
+			nextFrame = videoCapt.curFrame + 1;
+			if (nextFrame >= DISPLAY_NUM_FRAMES)
+			{
+				nextFrame = 0;
+			}
+			VideoChangeFrame(&videoCapt, nextFrame);
+			break;
+		case '7':
+			nextFrame = videoCapt.curFrame + 1;
+			if (nextFrame >= DISPLAY_NUM_FRAMES)
+			{
+				nextFrame = 0;
+			}
+			VideoStop(&videoCapt);
+			DemoInvertFrame(pFrames[videoCapt.curFrame], pFrames[nextFrame], videoCapt.timing.HActiveVideo, videoCapt.timing.VActiveVideo, DEMO_STRIDE);
+			VideoStart(&videoCapt);
+			DisplayChangeFrame(&dispCtrl, nextFrame);
+			break;
+		case '8':
+			nextFrame = videoCapt.curFrame + 1;
+			if (nextFrame >= DISPLAY_NUM_FRAMES)
+			{
+				nextFrame = 0;
+			}
+			VideoStop(&videoCapt);
+			DemoScaleFrame(pFrames[videoCapt.curFrame], pFrames[nextFrame], videoCapt.timing.HActiveVideo, videoCapt.timing.VActiveVideo, dispCtrl.vMode.width, dispCtrl.vMode.height, DEMO_STRIDE);
+			VideoStart(&videoCapt);
+			DisplayChangeFrame(&dispCtrl, nextFrame);
+			break;
+		case '9':
+			cur_move_seq_index = 0;
+			stone_detection(0);
+			break;
+		case 'a':
+			DemoInitialize();
+			break;
+		case 'b':
+			print_board_macros();
+		case 'm':
+			mem_show();
+		case 'c':
+			stone_detection(0);
+		case 't':
+			stone_detection(1);
+		case 'w':
+			break;
+		case 'r':
+			locked = XGpio_DiscreteRead(GpioPtr, 2);
+			xil_printf("%d", locked);
+			break;
+		default :
+			xil_printf("\n\rInvalid Selection");
+			MB_Sleep(50);
+		}
+	}
+
+	return;
+}
+
+void DemoPrintMenu()
+{
+	xil_printf("\x1B[H"); //Set cursor to top left of terminal
+	xil_printf("\x1B[2J"); //Clear terminal
+	xil_printf("**************************************************\n\r");
+	xil_printf("*                ZYBO Video Demo                 *\n\r");
+	xil_printf("**************************************************\n\r");
+	xil_printf("*Display Resolution: %28s*\n\r", dispCtrl.vMode.label);
+	//printf("*Display Pixel Clock Freq. (MHz): %15.3f*\n\r", dispCtrl.pxlFreq);
+	xil_printf("*Display Frame Index: %27d*\n\r", dispCtrl.curFrame);
+	if (videoCapt.state == VIDEO_DISCONNECTED) xil_printf("*Video Capture Resolution: %22s*\n\r", "!HDMI UNPLUGGED!");
+	else xil_printf("*Video Capture Resolution: %17dx%-4d*\n\r", videoCapt.timing.HActiveVideo, videoCapt.timing.VActiveVideo);
+	xil_printf("*Video Frame Index: %29d*\n\r", videoCapt.curFrame);
+	xil_printf("%d\r\n",  dispCtrl.curFrame);
+	xil_printf("**************************************************\n\r");
+	xil_printf("\n\r");
+	xil_printf("1 - Change Display Resolution\n\r");
+	xil_printf("2 - Change Display Framebuffer Index\n\r");
+	xil_printf("3 - Print Blended Test Pattern to Display Framebuffer\n\r");
+	xil_printf("4 - Print Color Bar Test Pattern to Display Framebuffer\n\r");
+	xil_printf("5 - Start/Stop Video stream into Video Framebuffer\n\r");
+	xil_printf("6 - Change Video Framebuffer Index\n\r");
+	xil_printf("7 - Grab Video Frame and invert colors\n\r");
+	xil_printf("8 - Grab Video Frame and scale to Display resolution\n\r");
+	xil_printf("9 - stone detection (start from scratch)\n\r");
+	xil_printf("a - re-initialize\n\r");
+	xil_printf("b - print board macros\n\r");
+
+	xil_printf("m - print memory to be exported\n\r");
+	xil_printf("c - continue the stone detection\n\r");
+
+	xil_printf("w - Quit\n\r");
+	xil_printf("\n\r");
+	xil_printf("\n\r");
+	xil_printf("Enter a selection:");
+}
+
+//================================================================================================
+// ********* OUR CODE *********************************************************************************
+//================================================================================================
+// user-configurable variables
+
+#define H_SUB 32 // height of the area around the intersection
+#define W_SUB 32 // width of the area around the intersection
+
+#define I0 199 // leftmost pixel in region of interest
+#define J0 129 // topmost pixel in the region of interest
+
+#define LEFT_EDGE (I0-3)//296
+#define RIGHT_EDGE (I1+3)//872
+#define TOP_EDGE (J0-3)//196
+#define BOTTOM_EDGE (J1+3)//582
+
+
+#define NO_STONE 0
+#define WHITE_STONE 1
+#define BLACK_STONE 2
+// ==================================== ADDRESS DEFINITIONS =================================================//
+volatile int * ip_ptr = (int *) 0x44a50000;
+
+
+
+// ==================================== MACROS =========================================================//
+
+// frame dimensions
+#define FRAME_WIDTH  1280//x//1280 // in pixels (usually 1280)
+#define FRAME_HEIGHT 1024//720 // in pixels (usually 720)
+
+
+// parameters for stone detection IP
+#define BUSY 1
+#define IDLE 2
+#define OUTPUTTING 3
+
+
+
+#define I1 (I0 + 19*W_SUB - 1)
+#define J1 (J0 + 19*H_SUB - 1)
+
+#define incl_iA ((int) (W_SUB*0.3))
+#define incl_iB ((int) (W_SUB*0.35))
+#define incl_iC ((int) (W_SUB*0.65))
+#define incl_iD ((int) (W_SUB*0.7))
+
+#define incl_jA ((int) (H_SUB*0.3))
+#define incl_jB ((int) (H_SUB*0.35))
+#define incl_jC ((int) (H_SUB*0.65))
+#define incl_jD ((int) (H_SUB*0.7))
+
+#define THRES_FRAC_NUM_W 	3
+#define THRES_FRAC_DENOM_W 	4
+
+#define THRES_FRAC_NUM_B	2
+#define THRES_FRAC_DENOM_B	3
+
+
+// parameters for hand detection IP
+
+
+#define DD_IN_LR 10
+#define DD_OUT_LR 10
+#define DD_IN_TB 10
+#define DD_OUT_TB 10
+
+#define THRES_HAND_L	20
+#define THRES_HAND_R	20
+#define THRES_HAND_T	20
+#define THRES_HAND_B	20
+
+#define AV_PARAM_LR_TARGET 20
+#define AV_PARAM_TB_TARGET 20
+
+// ====================================== GLOBAL VARS =============================================//
+int config_new[19][19];
+int config_old[19][19];
+
+int hd_dumped_value_min_L;
+int hd_dumped_value_min_R;
+int hd_dumped_value_min_T;
+int hd_dumped_value_min_B;
+int hd_dumped_value_max_L;
+int hd_dumped_value_max_R;
+int hd_dumped_value_max_T;
+int hd_dumped_value_max_B;
+// ====================================== HELPER FUNCTIONS ==================================================//
+
+// not used for anything special
+void delay(int num){
+	int i;
+	for (i=0; i<num; i++){
+		// do nothing
+	}
+}
+
+
+
+// don't forget to define the stone colors!
+int interpret(int print_result){
+	int i, j;
+
+	int white_placed = 0;
+	int black_placed = 0;
+	int white_removed = 0;
+	int black_removed = 0;
+	int action_seen = 0;
+	int unresolved = 0;
+
+	char coord_i, coord_j;
+
+	// config_new, config_old
+	for (j = 0; j<19; j++){
+		for (i = 0; i< 19; i++){
+			// if white appeared
+			if (config_old[j][i] == NO_STONE && config_new[j][i] == WHITE_STONE){
+				if (!action_seen || black_removed){
+					white_placed = 1;
+					coord_j = (char) (j&0xff);
+					coord_i = (char) (i&0xff);
+					action_seen = 1;
+				}
+				else{
+					unresolved = 1;
+				}
+
+			}
+			// if black stone appeared
+			if (config_old[j][i] == NO_STONE && config_new[j][i] == BLACK_STONE){
+				if (!action_seen || white_removed){
+					black_placed = 1;
+					coord_j = (char) (j&0xff);
+					coord_i = (char) (i&0xff);
+					action_seen = 1;
+				}
+				else{
+					unresolved = 1;
+				}
+			}
+			// if white disappeared
+			if (config_old[j][i] == WHITE_STONE && config_new[j][i] == NO_STONE){
+				if (!action_seen || black_placed || white_removed){
+					white_removed = 1;
+                    action_seen = 1;
+					//check liberties
+					if (i >= 1)
+						if (config_new[j][i-1] == NO_STONE && config_old[j][i-1] == NO_STONE)
+							unresolved = 1;
+					if (i <= 17)
+						if (config_new[j][i+1] == NO_STONE && config_old[j][i+1] == NO_STONE)
+							unresolved = 1;
+					if (j >= 1)
+						if (config_new[j-1][i] == NO_STONE && config_old[j-1][i] == NO_STONE)
+							unresolved = 1;
+					if (j <= 17)
+						if (config_new[j+1][i] == NO_STONE && config_old[j+1][i] == NO_STONE)
+							unresolved = 1;
+
+				}
+				else {
+					unresolved = 1;
+				}
+			}
+
+
+			// if black disappeared
+			if (config_old[j][i] == BLACK_STONE && config_new[j][i] == NO_STONE){
+				if (!action_seen || white_placed || black_removed){
+					black_removed = 1;
+                    action_seen = 1;
+					//check liberties
+					if (i >= 1)
+						if (config_new[j][i-1] == NO_STONE && config_old[j][i-1] == NO_STONE)
+							unresolved = 1;
+					if (i <= 17)
+						if (config_new[j][i+1] == NO_STONE && config_old[j][i+1] == NO_STONE)
+							unresolved = 1;
+					if (j >= 1)
+						if (config_new[j-1][i] == NO_STONE && config_old[j-1][i] == NO_STONE)
+							unresolved = 1;
+					if (j <= 17)
+						if (config_new[j+1][i] == NO_STONE && config_old[j+1][i] == NO_STONE)
+							unresolved = 1;
+
+				}
+				else {
+					unresolved = 1;
+				}
+			}
+		}
+	}
+	if (unresolved)
+		return -1;
+	if (action_seen){
+		if (white_placed){
+			if (print_result)
+				xil_printf("\n\rWhite: ");
+			move_seq[cur_move_seq_index].color = WHITE_STONE;
+		}
+		if (black_placed){
+			if (print_result)
+				xil_printf("\n\rBlack: ");
+			move_seq[cur_move_seq_index].color = BLACK_STONE;
+		}
+		move_seq[cur_move_seq_index].i = coord_i;
+		move_seq[cur_move_seq_index].j = coord_j;
+
+		if (print_result)
+			xil_printf("j = %d, i = %d", coord_j, coord_i);
+
+		cur_move_seq_index++;
+		return 1;
+	}
+	return 0;
+}
+
+
+
+void set_ip_reg(int reg_num, unsigned int value, unsigned int wait_for_value){
+	*(ip_ptr+reg_num) = value;
+	unsigned int temp;
+	temp = *(ip_ptr+reg_num);
+	int delay_time = 1;
+	int delay_time_max = 10;
+	while (temp != wait_for_value){
+		delay(delay_time);
+		temp = *(ip_ptr+reg_num);
+		if (delay_time<delay_time_max)
+			delay_time++;
+		else
+			xil_printf("\n\rI don't think the IP is reacting to me :(\n\r");
+	}
+	return;
+}
+
+/*
+ * Configures the stone detection IP
+ * Returns: nothing
+ * Inputs: none (only uses macros)
+ * */
+void configure_IP(){
+	int av_param_LR, av_param_TB;
+
+
+
+
+
+	av_param_LR = AV_PARAM_LR_TARGET;//search_up_until_divisor(AV_PARAM_LR_TARGET, BOTTOM_EDGE - TOP_EDGE + 1);
+	av_param_TB = AV_PARAM_LR_TARGET;//search_up_until_divisor(AV_PARAM_TB_TARGET, RIGHT_EDGE - LEFT_EDGE + 1);
+	delay(10);
+	// stone detection parameters
+	set_ip_reg(4, (FRAME_WIDTH << 16)+FRAME_HEIGHT, (FRAME_WIDTH << 16)+FRAME_HEIGHT);delay(10);
+	set_ip_reg(5, (W_SUB << 16)+H_SUB, (W_SUB << 16)+H_SUB);delay(10);
+	set_ip_reg(6, (I0 << 16) + J0, (I0 << 16) + J0);delay(10);
+	set_ip_reg(7, (incl_iA << 16) + incl_jA, (incl_iA << 16) + incl_jA);delay(10);
+	set_ip_reg(8, (incl_iB << 16) + incl_jB, (incl_iB << 16) + incl_jB);delay(10);
+	set_ip_reg(9, (incl_iC << 16) + incl_jC, (incl_iC << 16) + incl_jC);delay(10);
+	set_ip_reg(10, (incl_iD << 16) + incl_jD, (incl_iD << 16) + incl_jD);delay(10);
+	set_ip_reg(11, (THRES_FRAC_NUM_W << 24) + (THRES_FRAC_DENOM_W << 16) + (THRES_FRAC_NUM_B << 8) +(THRES_FRAC_DENOM_B), (THRES_FRAC_NUM_W << 24) + (THRES_FRAC_DENOM_W << 16) + (THRES_FRAC_NUM_B << 8) +(THRES_FRAC_DENOM_B));delay(10);
+	set_ip_reg(14, 1, 0);delay(10);
+
+
+
+
+
+	// configure the hand detection IP
+	set_ip_reg(5, (LEFT_EDGE << 16) + RIGHT_EDGE, (LEFT_EDGE << 16) + RIGHT_EDGE);delay(10);
+	set_ip_reg(6, (TOP_EDGE << 16) + BOTTOM_EDGE, (TOP_EDGE << 16) + BOTTOM_EDGE);delay(10);
+	set_ip_reg(8, (av_param_LR << 16) + av_param_TB, (av_param_LR << 16) + av_param_TB);delay(10);
+	set_ip_reg(9, (DD_IN_LR << 16) + DD_OUT_LR, (DD_IN_LR << 16) + DD_OUT_LR);delay(10);
+	set_ip_reg(10, (DD_IN_TB << 16) + DD_OUT_TB, (DD_IN_TB << 16) + DD_OUT_TB);delay(10);
+	set_ip_reg(14, 2, 0);delay(10);
+
+
+	return;
+}
+
+
+/*Copy source 19x19 array into the destination 19x19 array */
+void copy_config(int destination[19][19], int source[19][19]){
+	int i,j;
+	for (j = 0; j < 19; j++){
+		for (i = 0; i < 19; i++){
+			destination[j][i] = source[j][i];
+		}
+	}
+}
+
+
+
+
+int blah=0;
+/*
+ * Kevin's code
+ * */
+void start_frame_read(){
+
+
+
+
+	int Status;
+	int i;
+
+	XAxiVdma_DmaSetup vdmaConfig;
+	XAxiVdma_FrameCounter framecounter;
+
+
+	vdmaConfig.FrameDelay = 0;
+	vdmaConfig.EnableCircularBuf = 1;// Charles wrote 0
+	vdmaConfig.EnableSync = 0;
+	vdmaConfig.PointNum = 0;
+	vdmaConfig.EnableFrameCounter = 1;
+	vdmaConfig.VertSizeInput = dispCtrl.vdmaConfig.VertSizeInput;
+
+	vdmaConfig.HoriSizeInput = dispCtrl.vdmaConfig.HoriSizeInput;
+
+	//xil_printf("\n\rver %d\n\r", vdmaConfig.VertSizeInput);
+	//xil_printf("\n\rhor %d\n\r", vdmaConfig.HoriSizeInput);
+
+	//xil_printf("\n\r the horSizeInput is: %d\n\r", dispCtrl.vdmaConfig.HoriSizeInput);
+	//xil_printf("\n\r the vertSizeInput is: %d\n\r", dispCtrl.vdmaConfig.VertSizeInput);
+	vdmaConfig.FixedFrameStoreAddr = dispCtrl.curFrame;
+
+	framecounter.ReadFrameCount = 1;
+	framecounter.ReadDelayTimerCount = 0;
+	framecounter.WriteFrameCount = 0;
+	framecounter.WriteDelayTimerCount = 0;
+
+	vdmaConfig.Stride = DEMO_STRIDE; // TODO: Double check
+
+	for (i = 0; i < DISPLAY_NUM_FRAMES; i++)
+	{
+		vdmaConfig.FrameStoreStartAddr[i] = (u32) dispCtrl.framePtr[i];
+	}
+
+			//vdmaConfig.FrameStoreStartAddr[0] = (u32)  pFrames[0];
+
+
+			Status = XAxiVdma_DmaConfig(&vdma_1, XAXIVDMA_READ, &(vdmaConfig));
+
+
+			Status = XAxiVdma_DmaSetBufferAddr(&vdma_1, XAXIVDMA_READ, vdmaConfig.FrameStoreStartAddr);
+
+			XAxiVdma_SetFrameCounter(&vdma_1, &framecounter);// Blah Hi! hold on!
+
+
+
+			Status = XAxiVdma_DmaStart(&vdma_1, XAXIVDMA_READ);
+			if (blah==0){
+				Status = XAxiVdma_StartParking(&vdma_1, dispCtrl.curFrame, XAXIVDMA_READ);
+				blah = 1;
+			}
+
+
+
+	return;
+
+}
+
+void print_all_regs(){
+	int i;
+	for (i=0; i<16; i++){
+		xil_printf("%d ",*(ip_ptr+i));
+	}
+}
+
+int wait_if_ip_busy(){
+	int temp_busy, temp2;
+	int counter;
+	counter = 0;
+	temp_busy = *(ip_ptr+2);
+	while (temp_busy == BUSY){
+		temp_busy = *(ip_ptr+2);
+		counter++;
+
+		if (counter == 100000){
+			counter = 0;
+			temp2 = *(ip_ptr+2);
+			xil_printf("\n\rSomething went wrong. Printing all registers\n\r");
+			print_all_regs();
+			return -1;
+
+		}
+	}
+	return 0;
+}
+
+void print_board_macros(){
+	xil_printf("\n\r I0: %d \n\r",I0);
+	xil_printf("\n\r J0: %d \n\r",J0);
+	xil_printf("\n\r I1: %d \n\r",I1);
+	xil_printf("\n\r J1: %d \n\r",J1);
+
+	xil_printf("\n\r incl_iA: %d \n\r",incl_iA);
+	xil_printf("\n\r incl_iB: %d \n\r",incl_iB);
+	xil_printf("\n\r incl_iC: %d \n\r",incl_iC);
+	xil_printf("\n\r incl_iD: %d \n\r",incl_iD);
+
+	xil_printf("\n\r incl_jA: %d \n\r",incl_jA);
+	xil_printf("\n\r incl_jB: %d \n\r",incl_jB);
+	xil_printf("\n\r incl_jC: %d \n\r",incl_jC);
+	xil_printf("\n\r incl_jD: %d \n\r",incl_jD);
+
+
+
+}
+
+
+void print_board_config(int config [19][19]){
+	int i,j;
+	xil_printf("\n\r");
+	for (j = 0; j< 19 ; j++){
+		for (i=0;i<19;i++){
+			if (config[j][i] == NO_STONE)
+				xil_printf(". ");
+			if (config[j][i] == WHITE_STONE)
+				xil_printf("1 ");
+			if (config[j][i] == BLACK_STONE)
+				xil_printf("2 ");
+		}
+		xil_printf("\n\r");
+	}
+	xil_printf("\n\r");
+}
+
+#define HAND_L 1
+#define HAND_R 2
+#define HAND_T 3
+#define HAND_B 4
+
+int hand_detec(){
+	xil_printf("L:  %d/%d = %d\n\r",hd_dumped_value_max_L,hd_dumped_value_min_L, hd_dumped_value_max_L/hd_dumped_value_min_L);
+	xil_printf("R:  %d/%d = %d\n\r",hd_dumped_value_max_R,hd_dumped_value_min_R, hd_dumped_value_max_R/hd_dumped_value_min_R);
+	xil_printf("T:  %d/%d = %d\n\r", hd_dumped_value_max_T, hd_dumped_value_min_T, hd_dumped_value_max_T/hd_dumped_value_min_T);
+	xil_printf("B:  %d/%d = %d\n\r", hd_dumped_value_max_B, hd_dumped_value_min_B, hd_dumped_value_max_B/hd_dumped_value_min_B);
+
+	if (hd_dumped_value_min_L == 0)return HAND_L;
+	if	(hd_dumped_value_min_R== 0) return HAND_R;
+	if (hd_dumped_value_min_T == 0) return HAND_T;
+	if (hd_dumped_value_min_B == 0) return HAND_B;
+
+	if (hd_dumped_value_max_L/hd_dumped_value_min_L > THRES_HAND_L){
+
+		return HAND_L;
+	}
+	if (hd_dumped_value_max_R/hd_dumped_value_min_R > THRES_HAND_R){
+
+		return HAND_R;
+	}
+	if (hd_dumped_value_max_T/hd_dumped_value_min_T > THRES_HAND_T){
+
+		return HAND_T;
+	}
+	if (hd_dumped_value_max_B/hd_dumped_value_min_B > THRES_HAND_B){
+
+
+		return HAND_B;
+	}
+	return 0;
+}
+
+
+void print_stone_detec_options(){
+	xil_printf("---------");
+	xil_printf("m: Display menu");
+	xil_printf("c: Continue");
+	xil_printf("q: Quit");
+}
+
+
+void first_move_interpret(){
+	int i,j;
+
+	for (j=0; j< 19; j++){
+		for (i=0; i<19; i++){
+			if (config_new[j][i] == BLACK_STONE){
+				move_seq[0].color = BLACK_STONE;
+				move_seq[0].j = j;
+				move_seq[0].i = i;
+			}
+			if (config_new[j][i] == WHITE_STONE){
+				move_seq[1].color = WHITE_STONE;
+				move_seq[1].j = j;
+				move_seq[1].i = i;
+			}
+		}
+	}
+	cur_move_seq_index = 2;
+
+}
+int first_config = 1;
+
+void stone_detection(int is_timing_run)
+{
+	// VDMA transfer capture curFrame to IP
+
+	int i,j, temp;
+	int busy_wait_status;
+	int config_change;
+	int hand_keeper = 0;
+	int hand=0;
+	if (!is_timing_run)
+		print_stone_detec_options();
+
+	//print_board_macros();
+
+	configure_IP();
+
+	char userInput = 'c';
+	int timing_run_counter = 0;
+	// start IP
+	while(1){
+
+		if (!is_timing_run){
+			switch (userInput){
+				case 'q': 	return;
+							break;
+				case 'm':	print_stone_detec_options();
+							break;
+				case 'c':	break;
+				default:	xil_printf("Invalid selection\n\r");
+							MB_Sleep(50);
+			}
+
+			while ((XUartLite_IsReceiveEmpty(UART_BASEADDR) && !fRefresh)){}
+			userInput = XUartLite_ReadReg(UART_BASEADDR, XUL_RX_FIFO_OFFSET);
+					//break;
+
+		}
+
+		set_ip_reg(0,1,0);
+		set_ip_reg(1, 1, 0);
+
+		temp = *(ip_ptr+2);
+		while(temp == IDLE){
+			temp = *(ip_ptr + 2);
+		}
+		delay(10);// blah - this shouldn't be here!
+		start_frame_read();
+
+		busy_wait_status = wait_if_ip_busy();
+
+		if (busy_wait_status == -1) {
+			*(ip_ptr+0) = 1; // reset the IP
+			return; // :(
+		}
+
+		//while(1){
+			//xil_printf("%d", vdma_1.ReadCallBack.CompletionCallBack);
+		//}
+
+		// display/check output
+
+		for (j = 0; j<19; j++){
+			for (i = 0; i<19; i++){
+				config_new[j][i] = *(ip_ptr + 3);delay(10);
+			}
+		}
+
+
+		hd_dumped_value_min_L = *(ip_ptr+3);delay(10);
+		hd_dumped_value_min_R = *(ip_ptr+3);delay(10);
+		hd_dumped_value_min_T = *(ip_ptr+3);delay(10);
+		hd_dumped_value_min_B = *(ip_ptr+3);delay(10);
+		hd_dumped_value_max_L = *(ip_ptr+3);delay(10);
+		hd_dumped_value_max_R = *(ip_ptr+3);delay(10);
+		hd_dumped_value_max_T = *(ip_ptr+3);delay(10);
+		hd_dumped_value_max_B = *(ip_ptr+3);delay(10);
+
+		//hand = hand_detec();
+		//if (hand != 0 && hand_keeper != hand){
+			//xil_printf(" H:( \n\r", hand);
+			/*xil_printf("-----------");
+
+
+			xil_printf("%d\n\r", hd_dumped_value_min_L);
+			xil_printf("%d\n\r", hd_dumped_value_min_R);
+			xil_printf("%d\n\r", hd_dumped_value_min_T);
+			xil_printf("%d\n\r", hd_dumped_value_min_B);
+
+			xil_printf("%d\n\r", hd_dumped_value_max_L);
+			xil_printf("%d\n\r", hd_dumped_value_max_R);
+			xil_printf("%d\n\r", hd_dumped_value_max_T);
+			xil_printf("%d\n\r", hd_dumped_value_max_B);*/
+		//}
+		//hand_keeper = hand;
+		//if (hand_keeper)
+			//continue;
+		if (first_config)
+			if (!is_timing_run)
+				print_board_config(config_new);
+		if (!first_config){
+			config_change = interpret(1);
+			if (config_change == -1){
+				if (!is_timing_run)
+					xil_printf("\n\rUNRESOLVED :(\n\r");
+				//print_board_config(config_new);
+			}
+			else
+				first_move_interpret();
+			//else
+				//if (config_change == 1)
+					//print_board_config(config_new);
+		}
+		first_config = 0;
+		copy_config(config_old, config_new);
+		if (is_timing_run){
+
+
+			timing_run_counter++;
+			if (timing_run_counter == 100){
+				xil_printf("Timing run complete!\n\r");
+				return;
+			}
+		}
+
+	}
+
+
+
+	return;
+}
+//==================================================================================================
+void DemoChangeRes()
+{
+	int fResSet = 0;
+	int status;
+	char userInput = 0;
+
+	/* Flush UART FIFO */
+	while (!XUartLite_IsReceiveEmpty(UART_BASEADDR))
+		{
+			XUartLite_ReadReg(UART_BASEADDR, XUL_RX_FIFO_OFFSET);
+		}
+
+	while (!fResSet)
+	{
+		DemoCRMenu();
+
+		/* Wait for data on UART */
+		while (XUartLite_IsReceiveEmpty(UART_BASEADDR) && !fRefresh)
+		{}
+
+		/* Store the first character in the UART recieve FIFO and echo it */
+
+		userInput = XUartLite_ReadReg(UART_BASEADDR, XUL_RX_FIFO_OFFSET);
+		xil_printf("%c", userInput);
+		status = XST_SUCCESS;
+		switch (userInput)
+		{
+		case '1':
+			status = DisplayStop(&dispCtrl);
+			DisplaySetMode(&dispCtrl, &VMODE_640x480);
+			DisplayStart(&dispCtrl);
+			fResSet = 1;
+			break;
+		case '2':
+			status = DisplayStop(&dispCtrl);
+			DisplaySetMode(&dispCtrl, &VMODE_800x600);
+			DisplayStart(&dispCtrl);
+			fResSet = 1;
+			break;
+		case '3':
+			status = DisplayStop(&dispCtrl);
+			DisplaySetMode(&dispCtrl, &VMODE_1280x720);
+			DisplayStart(&dispCtrl);
+			fResSet = 1;
+			break;
+		case '4':
+			status = DisplayStop(&dispCtrl);
+			DisplaySetMode(&dispCtrl, &VMODE_1280x1024);
+			DisplayStart(&dispCtrl);
+			fResSet = 1;
+			break;
+		case '5':
+			status = DisplayStop(&dispCtrl);
+			DisplaySetMode(&dispCtrl, &VMODE_1920x1080);
+			DisplayStart(&dispCtrl);
+			fResSet = 1;
+			break;
+		case 'q':
+			fResSet = 1;
+			break;
+		default :
+			xil_printf("\n\rInvalid Selection");
+			MB_Sleep(50);
+		}
+		if (status == XST_DMA_ERROR)
+		{
+			xil_printf("\n\rWARNING: AXI VDMA Error detected and cleared\n\r");
+		}
+	}
+}
+
+void DemoCRMenu()
+{
+	xil_printf("\x1B[H"); //Set cursor to top left of terminal
+	xil_printf("\x1B[2J"); //Clear terminal
+	xil_printf("**************************************************\n\r");
+	xil_printf("*                ZYBO Video Demo                 *\n\r");
+	xil_printf("**************************************************\n\r");
+	xil_printf("*Current Resolution: %28s*\n\r", dispCtrl.vMode.label);
+	//printf("*Pixel Clock Freq. (MHz): %23.3f*\n\r", dispCtrl.pxlFreq);
+	xil_printf("**************************************************\n\r");
+	xil_printf("\n\r");
+	xil_printf("1 - %s\n\r", VMODE_640x480.label);
+	xil_printf("2 - %s\n\r", VMODE_800x600.label);
+	xil_printf("3 - %s\n\r", VMODE_1280x720.label);
+	xil_printf("4 - %s\n\r", VMODE_1280x1024.label);
+	xil_printf("5 - %s\n\r", VMODE_1920x1080.label);
+	xil_printf("q - Quit (don't change resolution)\n\r");
+	xil_printf("\n\r");
+	xil_printf("Select a new resolution:");
+}
+
+void DemoInvertFrame(u8 *srcFrame, u8 *destFrame, u32 width, u32 height, u32 stride)
+{
+	u32 xcoi, ycoi;
+	u32 lineStart = 0;
+	for(ycoi = 0; ycoi < height; ycoi++)
+	{
+		for(xcoi = 0; xcoi < (width * 3); xcoi+=3)
+		{
+			destFrame[xcoi + lineStart] = ~srcFrame[xcoi + lineStart];         //Red
+			destFrame[xcoi + lineStart + 1] = ~srcFrame[xcoi + lineStart + 1]; //Blue
+			destFrame[xcoi + lineStart + 2] = ~srcFrame[xcoi + lineStart + 2]; //Green
+		}
+		lineStart += stride;
+	}
+	/*
+	 * Flush the framebuffer memory range to ensure changes are written to the
+	 * actual memory, and therefore accessible by the VDMA.
+	 */
+	Xil_DCacheFlushRange((unsigned int) destFrame, DEMO_MAX_FRAME);
+}
+
+
+/*
+ * Bilinear interpolation algorithm. Assumes both frames have the same stride.
+ */
+void DemoScaleFrame(u8 *srcFrame, u8 *destFrame, u32 srcWidth, u32 srcHeight, u32 destWidth, u32 destHeight, u32 stride)
+{
+	float xInc, yInc; // Width/height of a destination frame pixel in the source frame coordinate system
+	float xcoSrc, ycoSrc; // Location of the destination pixel being operated on in the source frame coordinate system
+	float x1y1, x2y1, x1y2, x2y2; //Used to store the color data of the four nearest source pixels to the destination pixel
+	int ix1y1, ix2y1, ix1y2, ix2y2; //indexes into the source frame for the four nearest source pixels to the destination pixel
+	float xDist, yDist; //distances between destination pixel and x1y1 source pixels in source frame coordinate system
+
+	int xcoDest, ycoDest; // Location of the destination pixel being operated on in the destination coordinate system
+	int iy1; //Used to store the index of the first source pixel in the line with y1
+	int iDest; //index of the pixel data in the destination frame being operated on
+
+	int i;
+
+	xInc = ((float) srcWidth - 1.0) / ((float) destWidth);
+	yInc = ((float) srcHeight - 1.0) / ((float) destHeight);
+
+	ycoSrc = 0.0;
+	for (ycoDest = 0; ycoDest < destHeight; ycoDest++)
+	{
+		iy1 = ((int) ycoSrc) * stride;
+		yDist = ycoSrc - ((float) ((int) ycoSrc));
+
+		/*
+		 * Save some cycles in the loop below by presetting the destination
+		 * index to the first pixel in the current line
+		 */
+		iDest = ycoDest * stride;
+
+		xcoSrc = 0.0;
+		for (xcoDest = 0; xcoDest < destWidth; xcoDest++)
+		{
+			ix1y1 = iy1 + ((int) xcoSrc) * 3;
+			ix2y1 = ix1y1 + 3;
+			ix1y2 = ix1y1 + stride;
+			ix2y2 = ix1y1 + stride + 3;
+
+			xDist = xcoSrc - ((float) ((int) xcoSrc));
+
+			/*
+			 * For loop handles all three colors
+			 */
+			for (i = 0; i < 3; i++)
+			{
+				x1y1 = (float) srcFrame[ix1y1 + i];
+				x2y1 = (float) srcFrame[ix2y1 + i];
+				x1y2 = (float) srcFrame[ix1y2 + i];
+				x2y2 = (float) srcFrame[ix2y2 + i];
+
+				/*
+				 * Bilinear interpolation function
+				 */
+				destFrame[iDest] = (u8) ((1.0-yDist)*((1.0-xDist)*x1y1+xDist*x2y1) + yDist*((1.0-xDist)*x1y2+xDist*x2y2));
+				iDest++;
+			}
+			xcoSrc += xInc;
+		}
+		ycoSrc += yInc;
+	}
+
+	/*
+	 * Flush the framebuffer memory range to ensure changes are written to the
+	 * actual memory, and therefore accessible by the VDMA.
+	 */
+	Xil_DCacheFlushRange((unsigned int) destFrame, DEMO_MAX_FRAME);
+
+	return;
+}
+
+void DemoPrintTest(u8 *frame, u32 width, u32 height, u32 stride, int pattern)
+{
+	xil_printf("\nI am printing the demo print test\n");
+
+	u32 xcoi, ycoi;
+	u32 iPixelAddr;
+	u8 wRed, wBlue, wGreen;
+	u32 wCurrentInt;
+	double fRed, fBlue, fGreen, fColor;
+	u32 xLeft, xMid, xRight, xInt;
+	u32 yMid, yInt;
+	double xInc, yInc;
+
+
+	switch (pattern)
+	{
+	case DEMO_PATTERN_0:
+
+		xInt = width / 4; //Four intervals, each with width/4 pixels
+		xLeft = xInt * 3;
+		xMid = xInt * 2 * 3;
+		xRight = xInt * 3 * 3;
+		xInc = 256.0 / ((double) xInt); //256 color intensities are cycled through per interval (overflow must be caught when color=256.0)
+
+		yInt = height / 2; //Two intervals, each with width/2 lines
+		yMid = yInt;
+		yInc = 256.0 / ((double) yInt); //256 color intensities are cycled through per interval (overflow must be caught when color=256.0)
+
+		fBlue = 0.0;
+		fRed = 256.0;
+		for(xcoi = 0; xcoi < (width*3); xcoi+=3)
+		{
+			/*
+			 * Convert color intensities to integers < 256, and trim values >=256
+			 */
+			wRed = (fRed >= 256.0) ? 255 : ((u8) fRed);
+			wBlue = (fBlue >= 256.0) ? 255 : ((u8) fBlue);
+			iPixelAddr = xcoi;
+			fGreen = 0.0;
+			for(ycoi = 0; ycoi < height; ycoi++)
+			{
+
+				wGreen = (fGreen >= 256.0) ? 255 : ((u8) fGreen);
+				frame[iPixelAddr] = wRed;
+				frame[iPixelAddr + 1] = wBlue;
+				frame[iPixelAddr + 2] = wGreen;
+				if (ycoi < yMid)
+				{
+					fGreen += yInc;
+				}
+				else
+				{
+					fGreen -= yInc;
+				}
+
+				/*
+				 * This pattern is printed one vertical line at a time, so the address must be incremented
+				 * by the stride instead of just 1.
+				 */
+				iPixelAddr += stride;
+			}
+
+			if (xcoi < xLeft)
+			{
+				fBlue = 0.0;
+				fRed -= xInc;
+			}
+			else if (xcoi < xMid)
+			{
+				fBlue += xInc;
+				fRed += xInc;
+			}
+			else if (xcoi < xRight)
+			{
+				fBlue -= xInc;
+				fRed -= xInc;
+			}
+			else
+			{
+				fBlue += xInc;
+				fRed = 0;
+			}
+		}
+		/*
+		 * Flush the framebuffer memory range to ensure changes are written to the
+		 * actual memory, and therefore accessible by the VDMA.
+		 */
+		Xil_DCacheFlushRange((unsigned int) frame, DEMO_MAX_FRAME);
+		break;
+	case DEMO_PATTERN_1:
+
+		xInt = width / 7; //Seven intervals, each with width/7 pixels
+		xInc = 256.0 / ((double) xInt); //256 color intensities per interval. Notice that overflow is handled for this pattern.
+
+		fColor = 0.0;
+		wCurrentInt = 1;
+		for(xcoi = 0; xcoi < (width*3); xcoi+=3)
+		{
+
+			/*
+			 * Just draw white in the last partial interval (when width is not divisible by 7)
+			 */
+			if (wCurrentInt > 7)
+			{
+				wRed = 255;
+				wBlue = 255;
+				wGreen = 255;
+			}
+			else
+			{
+				if (wCurrentInt & 0b001)
+					wRed = (u8) fColor;
+				else
+					wRed = 0;
+
+				if (wCurrentInt & 0b010)
+					wBlue = (u8) fColor;
+				else
+					wBlue = 0;
+
+				if (wCurrentInt & 0b100)
+					wGreen = (u8) fColor;
+				else
+					wGreen = 0;
+			}
+
+			iPixelAddr = xcoi;
+
+			for(ycoi = 0; ycoi < height; ycoi++)
+			{
+				frame[iPixelAddr] = wRed;
+				frame[iPixelAddr + 1] = wBlue;
+				frame[iPixelAddr + 2] = wGreen;
+				/*
+				 * This pattern is printed one vertical line at a time, so the address must be incremented
+				 * by the stride instead of just 1.
+				 */
+				iPixelAddr += stride;
+			}
+
+			fColor += xInc;
+			if (fColor >= 256.0)
+			{
+				fColor = 0.0;
+				wCurrentInt++;
+			}
+		}
+		/*
+		 * Flush the framebuffer memory range to ensure changes are written to the
+		 * actual memory, and therefore accessible by the VDMA.
+		 */
+		Xil_DCacheFlushRange((unsigned int) frame, DEMO_MAX_FRAME);
+		break;
+	default :
+		xil_printf("Error: invalid pattern passed to DemoPrintTest");
+	}
+
+//	xil_printf("\n\rI am DONE printing the demo print test\n\r");
+
+
+}
+
+void DemoISR(void *callBackRef, void *pVideo)
+{
+
+	char *data = (char *) callBackRef;
+	*data = 1; //set fRefresh to 1
+}
+
